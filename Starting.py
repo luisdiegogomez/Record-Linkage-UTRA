@@ -38,4 +38,4 @@ def fill_comparison_arrays(recordA:pd.DataFrame,recordB:pd.DataFrame) -> pd.Data
 
     return(return_comparison_arrays)
 
-print(fill_comparison_arrays(A,B))
+# print(fill_comparison_arrays(A,B))
