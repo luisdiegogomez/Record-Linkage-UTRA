@@ -1,8 +1,8 @@
-﻿Patient ID,Test Results,Height,Weight,Age,
-264974,Postive,60 inches,70 kg,20,
-681618,Positive,65 inches,75 kg,15,
-186718,Negative,63 inches,65 kg,30,
-368951,Negative,70 inches,80 kg,34,
-176848,Positive,66 inches,78 kg,51,
-149649,Negative,75 inches,80 kg, 45,
-901739,Positive,72 inches,66 kg, 44,
+Patient ID,Test Results,Height,Weight,Age
+264974,Postive,60 inches,70 kg,20
+681618,Positive,65 inches,75 kg,15
+186718,Negative,63 inches,65 kg,30
+368951,Negative,70 inches,80 kg,34
+176848,Positive,66 inches,78 kg,51
+149649,Negative,75 inches,80 kg,45
+901739,Positive,72 inches,66 kg,44

@@ -1,6 +1,8 @@
 A <- read.csv("~/R/Record-Linkage-UTRA/TestCSV.csv")
 B <- read.csv("~/R/Record-Linkage-UTRA/Test CSV 2.csv")
 
+# Function that outputs data frame (dimensions N_a,N_b) representing the comparison gamma 
+# vectors for each pair of records between files A and B
 fill_comparison_arrays <- function(recordA, recordB){ 
   
   N_a <- nrow(recordA)
@@ -11,52 +13,28 @@ fill_comparison_arrays <- function(recordA, recordB){
   
   K <- ncol(X_a)
   
-  return_comparison_arrays <- matrix(data = vector(mode = "logical",length = K),N_a,N_b)
-
+  # Initialization of the matrix of comparison gamma vectors 
+  return_comparison_arrays <- matrix(data = list(vector(mode = "logical", length = K)),nrow = N_a, ncol = N_b)
+  
+  # Filling comparison vectors
   for(a in 1:N_a){
     for(b in 1:N_b){
-      comparison_array <- vector(mode = "logical", length = K)
-      for(r in 1:nrow(X_a)){
-        for(c in 1:ncol(X_a)){
-          if(X_a[r,c] == X_b[r,c]){
-            comparison_array[c] <- TRUE
-          }
-          else{
-            comparison_array[c] <- FALSE
-          }
+      for(col in 1:K){
+        if(X_a[a,col] == X_b[b,col]){
+          return_comparison_arrays[a,b][[1]][col] <- TRUE
+        }
+        else{
+          return_comparison_arrays[a,b][[1]][col] <- FALSE
         }
       }
-      return_comparison_arrays[a,b] <- comparison_array
     }
   }
+  
+  return_comparison_arrays <- as.data.frame(return_comparison_arrays)
   return(return_comparison_arrays)
 }
 
-C_matrix_filler <- function(comparison_arrays){ 
-  
-  ones_vector <- vector(mode = "logical", length = length(comparison_arrays[1,1]))
-  for(i in 1:length(ones_vector)){
-    ones_vector[i] <- TRUE
-  }
-  retrun_c_matrix <- matrix(data = 0,nrow(comparison_arrays),ncol(comparison_arrays))
-  
-  for(r in 1:nrow(comparison_arrays)){
-    for(c in 1:ncol(comparison_arrays)){
-      if(comparison_arrays[r,c] == ones_vector){
-        return_c_matrix[r,c] <- 1
-      }
-      else{
-        return_c_matrix[r,c] <- 0
-      }
-    }
-  }
-  
-  return(return_c_matrix)
-}
-
-comparison_arrays_ex <- fill_comparison_arrays(A,B)
-c_matrix <- C_matrix_filler(comparison_arrays_ex)
-
-View(comparison_arrays_ex)
-View(c_matrix)
+# comparison_arrays_ex <- fill_comparison_arrays(A,B)
+# 
+# View(comparison_arrays_ex)
 
