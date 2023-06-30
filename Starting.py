@@ -62,7 +62,7 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int):
     for r in range(N_a):
         C[r,N_b_shuffled[r]] = 1
 
-    # Gibbs Sampler for Theta Values
+    ## Gibbs Sampler for Theta Values:
     theta_values = np.full((K, t, 2), 0) # Array with K rows (one for each comparison variable),
                                          # t columns (one for each number of iterations), and 
                                          # two theta values in each cell (Theta_M and Theta_U 
@@ -77,7 +77,6 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int):
             alpha_M_1 = theta_M_params[1] + np.sum((1- comparison_arrays[:,:,gamma_col])*C)
 
             theta_values[gamma_col,i,0] = np.random.dirichlet(np.array(alpha_M_0, alpha_M_1))
-
             ## Sampling for Theta_U Values:
             # First Parameter for Dirichlet Distribution:
             alpha_U_0 = theta_U_params[0] + np.sum(comparison_arrays[:,:,gamma_col]*(1-C))
@@ -86,7 +85,19 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int):
 
             theta_values[gamma_col,i,1] = np.random.dirichlet(np.array(alpha_U_0, alpha_U_1))
 
-    
+        C_tplus1 = np.full((N_a,N_b), 0)
+        for a in range(N_a):
+            for b in range(N_b):
+                w = 0
+                for gamma_col in range(K):
+                    theta_log_rat = np.log(theta_values[gamma_col,t,0]/theta_values[gamma_col,t,1])
+                    w = w + comparison_arrays[a,b,gamma_col]*(np.sum(comparison_arrays[:,:,gamma_col](theta_log_rat)))
+                if C[a,b] == 0:
+                    if C_tplus1[]
+                    C_tplus1[a,b] = np.random.exponential(w)
+                else:
+                    C_tplus1[a,b] = 
+
 
     return(theta_values)
 
