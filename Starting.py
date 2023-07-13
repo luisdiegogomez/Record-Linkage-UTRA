@@ -88,12 +88,13 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int):
             theta_values[gamma_col,i,1] = np.random.dirichlet(np.array([alpha_U_0, alpha_U_1]))
 
         #Step 2: sampling C
+        #C[t+1]
+        C = np.full((N_a,N_b), 0)
 
         # For every file a (ie. every row of C)
         for a in range(N_a): 
             #Sets all links for file a to 0 
             print(C)
-            C[a, ] = 0 
             # list of length N_b: for each b, elt is b's index if b does not have a link, else None
             b_link_status = [b if not(1 in C[:, b]) else None for b in range(N_b)]
             # list of indices of unlinked b files: we will be choosing a link between file a and one of these unlinked bs
@@ -118,18 +119,14 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int):
             num = [likelihood_ratio(a, b) for b in b_unlinked]
             lr_sum = sum(num)
 
-            if len(b_unlinked) != 1: 
-                denom = [lr_sum - likelihood_ratio(a, b) for b in b_unlinked]
-                link_probs = [i / j for i, j in zip(num, denom)]
-                print(link_probs)
-                #samples random index from the unlinked bs, creates a new link 
-                new_link_index = np.random.choice(b_unlinked, 1, True, link_probs)
-            #if there is only one unlinked file, link to that file 
-            else: 
-                new_link_index = b_unlinked[0]
-            C[a, new_link_index] = 1
+            #denom = [lr_sum - likelihood_ratio(a, b) for b in b_unlinked]
+            denom = [lr_sum] * len(b_unlinked)
+            link_probs = [i / j for i, j in zip(num, denom)]
+            print(link_probs)
+            #samples random index from the unlinked bs, creates a new link 
+            new_link_index = (np.random.choice([i for i in range(len(b_unlinked))], 1, True, link_probs))[0]        
+            C[a, b_unlinked[new_link_index]] = np.random.binomial(1, link_probs[new_link_index])
 
-    #print(C)        
     return(theta_values)
 
 theta_values = theta_and_c_sampler(test_comp_array, 1)
