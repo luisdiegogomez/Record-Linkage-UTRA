@@ -144,9 +144,10 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int):
         Z = np.random.binomial(1,pi)
     X_1_shuffled = np.random.shuffle(np.array(range(n_1)))
     for j in range(n_2):
-        if Z[j] == 1:
-            
-        Z[j] = 
+        if Z[j] == 1: 
+            Z[j] = X_1_shuffled[i] + j 
+        else: 
+            Z[j] = j 
 
 
     ## Gibbs Sampler for Theta Values:
