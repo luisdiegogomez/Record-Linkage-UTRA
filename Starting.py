@@ -7,6 +7,9 @@ import math as math
 '''This implementation of record linkage is implemented from Power Prior Distribution 
 for Bayesian Record Linkage, DeVone 2016'''
 
+'''This implementation of record linkage is implemented from Power Prior Distribution 
+for Bayesian Record Linkage, DeVone 2016'''
+
 ## Initilizating Datasets From CSV Files:
 
 # Make sure file paths are based on wherever your files are locally 
@@ -32,6 +35,7 @@ K = len(X_a.columns)
 
 # Function that outputs 3-D array (dimensions N_a,N_b,K) representing the comparison gamma 
 # vectors for each pair of records between files A and B:
+def fill_comparison_arrays() -> np.ndarray:
 def fill_comparison_arrays() -> np.ndarray:
 
     # Initializing matrix of comparison gamma vectors:
@@ -60,6 +64,7 @@ test_comp_array = fill_comparison_arrays(A,B)
 ## Sampling Theta Values for Comparison Vectors:
 
 def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int) -> tuple:
+def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int) -> tuple:
     #Establishing initial parameters for the Dirchlet Distributions from which we're sampling:
     theta_M_params = [1,2]
     theta_U_params = [1,1]
@@ -71,6 +76,7 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int) -> tuple:
     # for r in range(N_a):
     #     C[r,N_b_shuffled[r]] = 1
 
+    ## Gibbs Sampler for Theta Values and C Structure:
     ## Gibbs Sampler for Theta Values and C Structure:
     theta_values = np.full((K, t, 2), fill_value=np.full((1,2), 0, dtype= float), dtype= np.ndarray) # Array with K rows (one for each comparison variable),
                                                                                             # t columns (one for each number of iterations), and 
@@ -85,13 +91,16 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int) -> tuple:
             alpha_M_0 = theta_M_params[0] + np.sum(comparison_arrays[:,:,gamma_col]*C)
             # Second Parameter for Dirichlet Distribution:
             alpha_M_1 = theta_M_params[1] + np.sum((1-comparison_arrays[:,:,gamma_col])*C)
+            alpha_M_1 = theta_M_params[1] + np.sum((1-comparison_arrays[:,:,gamma_col])*C)
 
             theta_values[gamma_col,i,0] = np.random.dirichlet(np.array([alpha_M_0, alpha_M_1]))
+
 
             ## Sampling for Theta_U Values:
             # First Parameter for Dirichlet Distribution:
             alpha_U_0 = theta_U_params[0] + np.sum(comparison_arrays[:,:,gamma_col]*(1-C))
             # Second Parameter for Dirichlet Distribution:
+            alpha_U_1 = theta_U_params[1] + np.sum((1-comparison_arrays[:,:,gamma_col])*(1-C))
             alpha_U_1 = theta_U_params[1] + np.sum((1-comparison_arrays[:,:,gamma_col])*(1-C))
 
             theta_values[gamma_col,i,1] = np.random.dirichlet(np.array([alpha_U_0, alpha_U_1]))
