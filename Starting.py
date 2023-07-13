@@ -2,11 +2,14 @@ import numpy as np
 
 import pandas as pd
 
+'''This implementation of record linkage is implemented from Power Prior Distribution 
+for Bayesian Record Linkage, DeVone 2016'''
+
 ## Initilizating Datasets From CSV Files:
 
 # Make sure file paths are based on wherever your files are locally 
-A = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/TestCSV.csv")
-B = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/Test CSV 2.csv")
+A = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/TestCSV.csv") # indivdual record indexed by a
+B = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/Test CSV 2.csv") # individual record indexed by b
 
 ## Global Variables:
 
@@ -22,7 +25,7 @@ K = len(X_a.columns)
 
 # Function that outputs 3-D array (dimensions N_a,N_b,K) representing the comparison gamma 
 # vectors for each pair of records between files A and B:
-def fill_comparison_arrays(recordA:pd.DataFrame,recordB:pd.DataFrame) -> np.ndarray:
+def fill_comparison_arrays() -> np.ndarray:
 
     # Initializing matrix of comparison gamma vectors:
     comparison_arrays = np.full((N_a, N_b, K), fill_value = 0) # N_a by N_b matrix with each cell containing 
@@ -50,7 +53,7 @@ test_comp_array = fill_comparison_arrays(A,B)
 
 ## Sampling Theta Values for Comparison Vectors:
 
-def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int):
+def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int) -> tuple:
     #Establishing initial parameters for the Dirchlet Distributions from which we're sampling:
     theta_M_params = [1,2]
     theta_U_params = [1,1]
@@ -62,7 +65,7 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int):
     for r in range(N_a):
         C[r,N_b_shuffled[r]] = 1
 
-    ## Gibbs Sampler for Theta Values:
+    ## Gibbs Sampler for Theta Values and C Structure:
     theta_values = np.full((K, t, 2), 0) # Array with K rows (one for each comparison variable),
                                          # t columns (one for each number of iterations), and 
                                          # two theta values in each cell (Theta_M and Theta_U 
@@ -74,32 +77,40 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int):
             # First Parameter for Dirichlet Distribution:
             alpha_M_0 = theta_M_params[0] + np.sum(comparison_arrays[:,:,gamma_col]*C)
             # Second Parameter for Dirichlet Distribution:
-            alpha_M_1 = theta_M_params[1] + np.sum((1- comparison_arrays[:,:,gamma_col])*C)
+            alpha_M_1 = theta_M_params[1] + np.sum((1-comparison_arrays[:,:,gamma_col])*C)
 
             theta_values[gamma_col,i,0] = np.random.dirichlet(np.array(alpha_M_0, alpha_M_1))
+
             ## Sampling for Theta_U Values:
             # First Parameter for Dirichlet Distribution:
             alpha_U_0 = theta_U_params[0] + np.sum(comparison_arrays[:,:,gamma_col]*(1-C))
             # Second Parameter for Dirichlet Distribution:
-            alpha_U_1 = theta_U_params[1] + np.sum((1- comparison_arrays[:,:,gamma_col])*(1-C))
+            alpha_U_1 = theta_U_params[1] + np.sum((1-comparison_arrays[:,:,gamma_col])*(1-C))
 
             theta_values[gamma_col,i,1] = np.random.dirichlet(np.array(alpha_U_0, alpha_U_1))
 
         C_tplus1 = np.full((N_a,N_b), 0)
+
+        # Outputs prob of gamma vector given theta values of just theta_m or theta_u:
+        def gamma_vec_prob(gamma_vec:np.ndarray,theta_values:np.ndarray):
+            output_prob = 1
+            for k in range(K):
+                    output_prob = output_prob*(theta_values[k]**gamma_vec[k])*((1-theta_values[k])**(1-gamma_vec[k]))
+
         for a in range(N_a):
             for b in range(N_b):
-                w = 0
-                for gamma_col in range(K):
-                    theta_log_rat = np.log(theta_values[gamma_col,t,0]/theta_values[gamma_col,t,1])
-                    w = w + comparison_arrays[a,b,gamma_col]*(np.sum(comparison_arrays[:,:,gamma_col](theta_log_rat)))
-                if C[a,b] == 0:
-                    if C_tplus1[]
-                    C_tplus1[a,b] = np.random.exponential(w)
+                numerator = gamma_vec_prob(comparison_arrays[a,b],theta_values[:,i,0])/gamma_vec_prob(comparison_arrays[a,b],theta_values[:,i,1])
+                denomintor = 0
+                p_THETA = 0
+                for j in range(N_b):
+                    denomintor += ((gamma_vec_prob(comparison_arrays[a,j],theta_values[:,i,0])/gamma_vec_prob(comparison_arrays[a,j],theta_values[:,i,1])) + p_THETA)*(C[a,j] == 0)
+                if denomintor == 0:
+                    C_tplus1[a,b] = 0
                 else:
-                    C_tplus1[a,b] = 
+                    C_tplus1[a,b] = np.random.binomial(1,(numerator/denomintor))
 
 
-    return(theta_values)
+    return(theta_values,C_tplus1)
 
 theta_values = theta_and_c_sampler(test_comp_array, 10)
 print(theta_values)
