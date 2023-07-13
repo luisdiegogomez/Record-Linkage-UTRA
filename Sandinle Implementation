@@ -84,7 +84,6 @@ def fill_comparison_arrays_matrix() -> tuple:
     comparison_arrays = np.full((n_1,n_2,F), fill_value = 0, dtype=float) # n_1 by n_2 matrix with each cell containing 
                                                                           # a gamma comparison vector (of size F) for each  
                                                                           # pair of files (indexed i,j) in X_1 and X_2
-
     # Filling comparison vectors:
     for i in range(n_1):
         for j in range(n_2):
