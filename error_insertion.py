@@ -19,6 +19,12 @@ def insert_str_deletion_error(myfile, row, col):
 
     myfile.iloc[row, col] = newstr
 
+def insert_gaussian_noise(myfile, row, col, mu, sig): 
+    myfloat = myfile.iloc[row, col] 
+    noise = np.random.normal(mu,sig,1)
+    newfloat = myfloat + noise 
+    myfile.iloc[row, col] = newfloat
+
 #transposition errors in name: randomly chosen characters are swapped in given string in data frame 
 def insert_str_transpose_error(myfile, row, col): 
     mystr = myfile.iloc[row, col] 
@@ -46,6 +52,6 @@ def insert_errors(mydata):
             insert_str_transpose_error(mydata, i, income_index)
 
 insert_errors(A)
-A.to_csv(r'C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\2015 Shortened w_Errors.csv')
+A.to_csv('TestCSVcopppy.csv')
 
 

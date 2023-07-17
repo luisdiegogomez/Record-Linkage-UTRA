@@ -1,6 +1,6 @@
-ID,Name,Age,DOB,Height,Weight,Income
-0,John Smih,20,6/14/2003,60 inches,70 kg,",50$000 "
-1,Ruby Roers,15,5/16/2008,65 inches,75 kg,0$ 
-2,James McIntire,30,12/5/1992,63 inches,65 kg,"$70,000 "
-3,Jonathen Jones,34,2/24/1989,70 inches,80 kg,"$80,000 "
-4,Lsa Renee,51,3/15/1972,66 inches,78 kg,"$09,000 "
+,Name,Age,DOB,Height,Weight,Income
+0,John Smith,20,6/14/2003,60 inches,70 kg,"$50,000"
+1,Ruby Rogrs,15,5/16/2008,65 inches,75 kg,0$ 
+2,Jams McIntire,30,12/5/1992,63 inches,65 kg,"$7000,0"
+3,Jonathen Jones,34,2/24/1989,70 inches,80 kg,"$80,000"
+4,Lisa Renee,51,3/15/1972,66 inches,78 kg,"$90,000"

@@ -13,13 +13,8 @@ for Bayesian Record Linkage, DeVone 2016'''
 ## Initilizating Datasets From CSV Files:
 
 # Make sure file paths are based on wherever your files are locally 
-<<<<<<< HEAD
-A = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\2015.csv")
-B = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\2015.csv")
-=======
-A = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/TestCSV.csv") # indivdual record indexed by a
-B = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/Test CSV 2.csv") # individual record indexed by b
->>>>>>> 353a31c4e147e45176499a60a2d09116f4046cfa
+A = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\TestCSV.csv")
+B = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\TestCSV.csv")
 
 ## Global Variables:
 
@@ -35,7 +30,6 @@ K = len(X_a.columns)
 
 # Function that outputs 3-D array (dimensions N_a,N_b,K) representing the comparison gamma 
 # vectors for each pair of records between files A and B:
-def fill_comparison_arrays() -> np.ndarray:
 def fill_comparison_arrays() -> np.ndarray:
 
     # Initializing matrix of comparison gamma vectors:
@@ -64,7 +58,6 @@ test_comp_array = fill_comparison_arrays(A,B)
 ## Sampling Theta Values for Comparison Vectors:
 
 def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int) -> tuple:
-def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int) -> tuple:
     #Establishing initial parameters for the Dirchlet Distributions from which we're sampling:
     theta_M_params = [1,2]
     theta_U_params = [1,1]
@@ -82,7 +75,6 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, t:int) -> tuple:
                                                                                             # t columns (one for each number of iterations), and 
                                                                                             # two theta values in each cell (Theta_M and Theta_U 
                                                                                             # values for each comparison variable)
-
     for i in range(t):
         #Step 1: sampling thetas 
         for gamma_col in range(K):
