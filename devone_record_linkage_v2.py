@@ -3,14 +3,14 @@
 import numpy as np
 
 import pandas as pd
-import scipy as scipy
+
 import math as math
 
 ## Initilizating Datasets From CSV Files:
 
 # Make sure file paths are based on wherever your files are locally 
-A = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\TestCSV.csv")
-B = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\TestCSV.csv")
+A = pd.read_csv(r"C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\generated_csv1")
+B = pd.read_csv(r"C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\generated_csv2")
 
 ## Global Variables:
 
@@ -52,7 +52,7 @@ def fill_comparison_arrays(recordA:pd.DataFrame,recordB:pd.DataFrame) -> np.ndar
 test_comp_array = fill_comparison_arrays(A,B)
 ## Sampling Theta Values for Comparison Vectors:
 
-def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
+def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
     #Establishing initial parameters for the Dirchlet Distributions from which we're sampling:
     theta_M_params = [1,2]
     theta_U_params = [1,1]
@@ -120,9 +120,12 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
             new_link_index = (np.random.choice([i for i in range(len(b_unlinked))], 1, True, link_probs))[0]        
             C[N_a * a + b_unlinked[new_link_index]] = np.random.binomial(1, link_probs[new_link_index])
     
-        print(C, t)
-    return(theta_values)
+        #print(C, t)
+    return(theta_values,C)
 
 
 theta_values = theta_and_c_sampler(test_comp_array, 10)
-#print(theta_values)
+print("Theta Values:")
+print(theta_values[0])
+print("C Structure:")
+print(theta_values[1])

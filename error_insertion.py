@@ -3,7 +3,7 @@ import pandas
 from pandas import read_csv
 import random
 
-A = pandas.read_csv("TestCSV.csv")
+A = pandas.read_csv(r"C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\2015 Shortened.csv")
 #indices of the columns to insert errors into. We start with the name and age columns 
 name_index = 0 
 income_index = 5
@@ -46,6 +46,6 @@ def insert_errors(mydata):
             insert_str_transpose_error(mydata, i, income_index)
 
 insert_errors(A)
-A.to_csv('TestCSVcopy.csv')
+A.to_csv(r'C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\2015 Shortened w_Errors.csv')
 
 

@@ -1,0 +1,21 @@
+Name,State,ZIP Code,Test Result,Income
+John Doe,California,90001,Positive,50000
+Jane Smith,Texas,75001,Negative,60000
+Michael Johnson,Florida,33001,Negative,45000
+Emily Davis,New York,10001,Positive,55000
+Daniel Wilson,Washington,98001,Positive,70000
+Alice Johnson,Arizona,85001,Negative,55000
+David Thompson,Illinois,60001,Positive,40000
+Sarah Martinez,Michigan,48001,Positive,45000
+Robert Anderson,Colorado,80001,Negative,65000
+Jessica Davis,Tennessee,37001,Negative,50000
+Olivia Wilson,Massachusetts,02001,Positive,55000
+William Brown,Pennsylvania,15001,Negative,60000
+Sophia Martinez,Ohio,43001,Positive,50000
+James Johnson,North Carolina,27001,Negative,55000
+Abigail Smith,Georgia,30001,Positive,45000
+Ethan Anderson,Indiana,46001,Negative,55000
+Grace Davis,Minnesota,55001,Positive,60000
+Daniel Wilson,California,90002,Negative,50000
+Alice Johnson,Texas,75002,Positive,55000
+David Thompson,Florida,33002,Negative,60000
