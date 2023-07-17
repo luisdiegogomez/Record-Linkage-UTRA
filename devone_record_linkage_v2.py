@@ -21,7 +21,7 @@ A = 0
 B = 0
 N_a = 0
 N_b = 0
-if len(A_temp.index) <= len(B_temp.index):
+if len(A_temp.index) >= len(B_temp.index):
     A = A_temp
     B = B_temp
     N_a = len(A.index) # Equivalent to N_a
@@ -35,6 +35,9 @@ else:
   
 X_a = A[np.sort(A.columns.intersection(B.columns))]
 X_b = B[np.sort(B.columns.intersection(A.columns))]
+
+print(X_a)
+print(X_b)
   
 K = len(X_a.columns)
 
@@ -53,9 +56,9 @@ def fill_comparison_arrays(recordA:pd.DataFrame,recordB:pd.DataFrame) -> np.ndar
         for b in range(N_b):
             for k in range(K):
                 if X_a.iat[a,k] == X_b.iat[b,k]:
-                    comparison_arrays[k, ((N_a*a) + b)] = 1
+                    comparison_arrays[k, ((N_b*a) + b)] = 1
                 else:
-                    comparison_arrays[k, ((N_a*a) + b)] = 0
+                    comparison_arrays[k, ((N_b*a) + b)] = 0
 
     ## Converting the matrix of comparison vectors to a pandas DataFrame
     # return_comparison_arrays = pd.DataFrame(index=range(N_a), columns=range(N_b))
@@ -66,6 +69,17 @@ def fill_comparison_arrays(recordA:pd.DataFrame,recordB:pd.DataFrame) -> np.ndar
     return(comparison_arrays)
 
 test_comp_array = fill_comparison_arrays(A,B)
+print(test_comp_array)
+
+pandas_comp_array = pd.DataFrame(index=range(K), columns=range(N_a*N_b))
+for a in range(N_a):
+    for b in range(N_b):
+            for k in range(K):
+                pandas_comp_array.iat[k, N_b*a + b] = test_comp_array[k, N_b*a + b]
+
+print("Comparison Array:")
+print(pandas_comp_array)
+
 ## Sampling Theta Values for Comparison Vectors:
 
 def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
@@ -106,8 +120,9 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
 
         # For every file a (ie. every row of C)
         for a in range(N_a): 
+            C[a, ] = 0
             # list of length N_b: for each b, elt is b's index if b does not have a link, else None
-            b_link_status = [b if C[a*N_a + b] != 1 else None for b in range(N_b)]
+            b_link_status = [b if C[N_b*a + b] != 1 else None for b in range(N_b)]
 
             # list of indices of unlinked b files: we will be choosing a link between file a and one of these unlinked bs
             b_unlinked = list(filter(lambda x: x != None, b_link_status)) 
@@ -119,11 +134,11 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
                 for k in range(K): 
                     theta_k_m0 = theta_values[k, t, 0][0]
                     theta_k_m1 = theta_values[k, t, 0][1]
-                    m_lh = m_lh * (theta_k_m0)**comparison_arrays[k, (N_a* a + b)] * (theta_k_m1)**(1-comparison_arrays[k, (N_a* a + b)])
+                    m_lh = m_lh * (theta_k_m0)**comparison_arrays[k, (N_b*a + b)] * (theta_k_m1)**(1-comparison_arrays[k, (N_b*a + b)])
 
                     theta_k_u0 = theta_values[k, t, 1][0]
                     theta_k_u1 = theta_values[k, t, 1][1]
-                    u_lh = u_lh * (theta_k_u0)**comparison_arrays[k, (N_a* a + b)] * (theta_k_u1)**(1-comparison_arrays[k, (N_a* a + b)])
+                    u_lh = u_lh * (theta_k_u0)**comparison_arrays[k, (N_b*a + b)] * (theta_k_u1)**(1-comparison_arrays[k, (N_b*a + b)])
                 
                 lr = m_lh/u_lh 
                 return lr
@@ -134,18 +149,18 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
 
             #samples b_unlinked index from the , creates a new link at that b with probability associated with that  b 
             new_link_index = (np.random.choice([i for i in range(len(b_unlinked))], 1, True, link_probs))[0]        
-            C[N_a * a + b_unlinked[new_link_index]] = np.random.binomial(1, link_probs[new_link_index])
+            C[N_b*a + b_unlinked[new_link_index]] = np.random.binomial(1, link_probs[new_link_index])
     
     C_return = pd.DataFrame(index=range(N_a), columns=range(N_b))
     for a in range(N_a):
         for b in range(N_b):
-            C_return.iat[a, b] = C[N_a*a +b]
-    print(C, t)
+            C_return.iat[a, b] = C[N_b*a +b]
+    # print(C, t)
     return(theta_values,C_return)
 
 
-theta_values = theta_and_c_sampler(test_comp_array, 10)
-print("Theta Values:")
-print(theta_values[0])
+theta_values = theta_and_c_sampler(test_comp_array, 100)
+# print("Theta Values:")
+# print(theta_values[0])
 print("C Structure:")
 print(theta_values[1])
