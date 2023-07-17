@@ -9,13 +9,29 @@ import math as math
 ## Initilizating Datasets From CSV Files:
 
 # Make sure file paths are based on wherever your files are locally 
-A = pd.read_csv(r"C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\generated_csv1")
-B = pd.read_csv(r"C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\generated_csv2")
+A_temp = pd.read_csv(r"C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\generated_csv1.csv")
+B_temp = pd.read_csv(r"C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\generated_csv2.csv")
 
 ## Global Variables:
 
-N_a = len(A.index)
-N_b = len(B.index)
+# N_a = len(A.index)
+# N_b = len(B.index)
+
+A = 0
+B = 0
+N_a = 0
+N_b = 0
+if len(A_temp.index) <= len(B_temp.index):
+    A = A_temp
+    B = B_temp
+    N_a = len(A.index) # Equivalent to N_a
+    N_b = len(B.index) # Equivalent to N_b
+else:
+    A = B_temp
+    B = A_temp
+    N_a = len(A.index) # Equivalent to N_a
+    N_b = len(B.index) # Equivalent to N_b
+
   
 X_a = A[np.sort(A.columns.intersection(B.columns))]
 X_b = B[np.sort(B.columns.intersection(A.columns))]
@@ -29,7 +45,7 @@ K = len(X_a.columns)
 def fill_comparison_arrays(recordA:pd.DataFrame,recordB:pd.DataFrame) -> np.ndarray:
 
     # Initializing matrix of comparison gamma vectors:
-    comparison_arrays = np.full((K, (N_a * N_b)), fill_value = 0, dtype= float) # N_a by N_b matrix with each cell containing 
+    comparison_arrays = np.full((K, (N_a*N_b)), fill_value = 0, dtype= float) # N_a by N_b matrix with each cell containing 
                                                                # a gamma comparison vector (of size K) for each  
                                                                # pair of files in A and B
     # Filling comparison vectors:
@@ -37,9 +53,9 @@ def fill_comparison_arrays(recordA:pd.DataFrame,recordB:pd.DataFrame) -> np.ndar
         for b in range(N_b):
             for k in range(K):
                 if X_a.iat[a,k] == X_b.iat[b,k]:
-                    comparison_arrays[k, (N_a* a + b)] = 1
+                    comparison_arrays[k, ((N_a*a) + b)] = 1
                 else:
-                    comparison_arrays[k, (N_a* a + b)] = 0
+                    comparison_arrays[k, ((N_a*a) + b)] = 0
 
     ## Converting the matrix of comparison vectors to a pandas DataFrame
     # return_comparison_arrays = pd.DataFrame(index=range(N_a), columns=range(N_b))
@@ -120,8 +136,12 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
             new_link_index = (np.random.choice([i for i in range(len(b_unlinked))], 1, True, link_probs))[0]        
             C[N_a * a + b_unlinked[new_link_index]] = np.random.binomial(1, link_probs[new_link_index])
     
-        #print(C, t)
-    return(theta_values,C)
+    C_return = pd.DataFrame(index=range(N_a), columns=range(N_b))
+    for a in range(N_a):
+        for b in range(N_b):
+            C_return.iat[a, b] = C[N_a*a +b]
+    print(C, t)
+    return(theta_values,C_return)
 
 
 theta_values = theta_and_c_sampler(test_comp_array, 10)

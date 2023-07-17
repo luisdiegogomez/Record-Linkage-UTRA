@@ -1,16 +1,16 @@
-Age,Name,Disease,ZIP Code,State,Food Choice
-29,Daniel Wilson,Flu,98001,Washington,Pizza
-36,Alice Johnson,Allergies,85001,Arizona,Burger
-41,David Thompson,Cold,60001,Illinois,Sandwich
-27,Sarah Martinez,Fever,48001,Michigan,Sushi
-32,Robert Anderson,Headache,80001,Colorado,Tacos
-25,Jessica Davis,Asthma,37001,Tennessee,Salad
-33,Olivia Wilson,Back Pain,02001,Massachusetts,Steak
-28,William Brown,Migraine,15001,Pennsylvania,Pasta
-35,Sophia Martinez,Stomachache,43001,Ohio,Sushi
-40,James Johnson,Flu,27001,North Carolina,Pizza
-34,Abigail Smith,Allergies,30001,Georgia,Burger
-31,Ethan Anderson,Cold,46001,Indiana,Sandwich
-26,Grace Davis,Fever,55001,Minnesota,Tacos
-45,Daniel Wilson,Back Pain,90002,California,Salad
-39,Alice Johnson,Headache,75002,Texas,Steak
+Age,Name,Disease,ZIP Code,State,Date of Birth,Social Security Number,Food Choice
+25,John Doe,COVID-19,90001,California,1985-03-15,123-45-6789,Pasta
+31,Jane Smith,Influenza,75001,Texas,1990-08-22,987-65-4321,Salad
+45,Michael Johnson,Asthma,10001,New York,1978-11-10,567-89-0123,Burger
+32,Emily Brown,COVID-19,33001,Florida,1989-05-03,345-67-8901,Pizza
+28,William Lee,COVID-19,98101,Washington,1983-09-18,789-01-2345,Sushi
+27,Alice Williams,Diabetes,30301,Georgia,1994-07-20,456-78-9012,Fruit Salad
+38,Robert Martin,COVID-19,60601,Illinois,1982-12-15,901-23-4567,Tacos
+22,Emma Thompson,Influenza,20001,Washington D.C.,1999-01-30,567-89-0123,Steak
+36,James Davis,Asthma,33301,Florida,1987-08-12,234-56-7890,Chicken
+41,Sophia Hernandez,COVID-19,60201,Illinois,1980-10-10,890-12-3456,Seafood
+29,John Wilson,COVID-19,98121,Washington,1993-03-01,987-65-4321,Sandwiches
+34,Ava Garcia,Diabetes,80001,Colorado,1988-11-05,345-67-8901,Smoothies
+27,Michael Moore,COVID-19,85001,Arizona,1996-05-20,123-45-6789,Pasta
+39,Sophia Johnson,Asthma,30302,Georgia,1984-02-09,789-01-2345,Burger
+33,Aiden Martin,COVID-19,60001,Illinois,1991-07-11,234-56-7890,Pizza
