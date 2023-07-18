@@ -13,12 +13,6 @@ A_temp = pd.read_csv(r"C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\g
 B_temp = pd.read_csv(r"C:\Users\luisd\OneDrive\Documents\R\Record-Linkage-UTRA\generated_csv2.csv")
 
 ## Global Variables:
-
-# N_a = len(A.index)
-# N_b = len(B.index)
-
-A = 0
-B = 0
 N_a = 0
 N_b = 0
 if len(A_temp.index) >= len(B_temp.index):
