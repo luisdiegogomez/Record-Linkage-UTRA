@@ -9,71 +9,63 @@ class ErrorLvl(Enum):
     MID = .4 
     LOW = .2 
 
-A = pandas.read_csv("TestCSV.csv")
+A = pandas.read_csv("generated_csv2.csv")
 N_a = len(A.index)
-err_lvls ={}
+
+def insert_error(cols, err_func, err_lvls) -> list: 
+    for col in cols: 
+        err_lvl = err_lvls.get(col)
+        row_indices = np.array([i for i in range(N_a)])
+        num_err_rows = round(err_lvl*N_a)
+        selected_rows = np.random.choice(row_indices, num_err_rows)
+        for r in selected_rows: 
+            err_func(r, A.columns.get_loc(col))
 
 #delete errors in string: random character is deleted from given string in data frame
-def insert_str_deletion_error(str_cols):
-    for col in str_cols: 
-        err_lvl = err_lvls.get(col)
-        selected_rows = np.random.sample([i for i in range(N_a)], round(err_lvl*N_a))
-        for r in selected_rows: 
-            mystr = A.iloc[r, col] 
-            del_char = random.randint(0, len(mystr)-1)
-            newstr = mystr[:del_char] + mystr[del_char +1:]
-            A.iloc[r, col] = newstr    
-    
+def char_deletion(r, col):
+    mystr = A.iloc[r, col] 
+    del_char = random.randint(0, len(mystr)-1)
+    newstr = mystr[:del_char] + mystr[del_char +1:]
+    A.iloc[r, col] = newstr    
+        
 #transposition errors in string: randomly chosen characters are swapped in given string in data frame 
-def insert_str_transpose_error(str_cols): 
-    for col in str_cols: 
-        err_lvl = err_lvls.get(col)
-        selected_rows = np.random.sample([i for i in range(N_a)], round(err_lvl*N_a))
-        for r in selected_rows: 
-            mystr = A.loc[r, col] 
-            del_indices = random.sample(range(0, len(mystr)-1), 2)
-            char_list = [char for char in mystr]
-            temp = char_list[del_indices[0]]
-            char_list[del_indices[0]] = char_list[del_indices[1]]
-            char_list[del_indices[1]] = temp
-            newstr = ''.join(char_list)
-            A.iloc[r, col] = newstr
+def char_transposition(r, col): 
+    mystr = A.iloc[r, col] 
+    del_indices = random.sample(range(0, len(mystr)-1), 2)
+    char_list = [char for char in mystr]
+    temp = char_list[del_indices[0]]
+    char_list[del_indices[0]] = char_list[del_indices[1]]
+    char_list[del_indices[1]] = temp
+    newstr = ''.join(char_list)
+    A.iloc[r, col] = newstr
 
 # insert errors for categorical data: randomly selects a new category 
-def insert_category_error(cat_cols): 
-    for col in cat_cols: 
-        err_lvl = err_lvls.get(col)
-        selected_rows = np.random.sample([i for i in range(N_a)], round(err_lvl.value() *N_a))
-        categories = A[col].cat.categories
-        for r in selected_rows: 
-            A.loc[r, col] = np.random.choice(categories, 1)
+def categorical_swap(r, col): 
+    categories = A[col].cat.categories
+    A.iloc[r, col] = np.random.choice(categories, 1)
 
-# def insert_gaussian_error(float_cols, is_int): 
-#     for col in float_cols: 
-#         err_lvl = err_lvls.get(col)
-#         selected_rows = np.random.sample([i for i in range(N_a)], round(err_lvl*N_a))
-#         mu = 0 
-#         sig = 0 
-#         for r in selected_rows:
-#             myfloat = A.loc[r, col] 
-#             noise = np.random.normal(mu,sig,1)
-#             newval = myfloat + noise 
-#             if is_int ==1 : 
-#                 newval = round(newval)
-#             A.loc[r, col] = newval
+def bool_error(r, col):
+    A.iloc[r, col] = np.random.choice([True, False], 1)
 
-def insert_bool_error(bool_cols):
-     for col in bool_cols: 
-        err_lvl = (err_lvls.get(col))
-        selected_rows = np.random.sample([i for i in range(N_a)], round(err_lvl*N_a))
-        for r in selected_rows: 
-            A.loc[r, col] = np.random.choice([True, False], 1)
+#TODO: fix gaussian error insertion 
+def int_gaussian_error(r, col): 
+    myint = A.iloc[r, col]
+
+def float_gaussian_error(r, col): 
+    myfloat = A.iloc[r, col]
+    noise = np.random.normal(0,0,1)
+
+#TODO: datetime error insertion 
+def datetime_error(r, col): 
+    myDate = A.iloc[r, col]
+    dateStr = myDate.strftime()
+    char_list = [char for char in dateStr]
 
 
-def insert_errors(newDataPath : str, error_lvls : list[ErrorLvl]): 
+def insert_errors(newDataPath : str, errorList : list[ErrorLvl]): 
 
-    assert(len(error_lvls) == len(A.columns)), ("Must provide an error level for each column")
-    err_lvls = {(list(A.columns))[i] : error_lvls[i].value for i in range(len(error_lvls))}
+    assert(len(errorList) == len(A.columns)), ("Must provide an error level for each column")
+    err_lvls = {(list(A.columns))[i] : errorList[i].value for i in range(len(errorList))}
 
     integer_columns = A.select_dtypes(include=['int64']).columns
     float_columns = A.select_dtypes(include=['float64']).columns
@@ -82,16 +74,13 @@ def insert_errors(newDataPath : str, error_lvls : list[ErrorLvl]):
     bool_columns = A.select_dtypes(include=['bool']).columns
     category_columns = A.select_dtypes(include=['category']).columns
 
-    insert_category_error(category_columns)
-    insert_bool_error(bool_columns)
-    insert_str_deletion_error(object_columns)
-    insert_str_transpose_error(object_columns)
-    # insert_gaussian_error(float_columns, 0)
-    # insert_gaussian_error(integer_columns, 1)
-
+    insert_error(category_columns, categorical_swap, err_lvls)
+    insert_error(bool_columns, bool_error, err_lvls)
+    insert_error(object_columns, char_deletion, err_lvls)
+    insert_error(object_columns, char_transposition, err_lvls)
+    
     A.to_csv(newDataPath)
 
+error = [ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH ]
 
-error = [ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH ]
-
-insert_errors("TestCSVcooopy.csv", error)
+insert_errors("generated_csv3.csv", error)

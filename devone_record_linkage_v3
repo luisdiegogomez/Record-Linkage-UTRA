@@ -14,13 +14,7 @@ B_temp = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\gen
 
 ## Global Variables:
 
-# N_a = len(A.index)
-# N_b = len(B.index)
-
-A = 0
-B = 0
-N_a = 0
-N_b = 0
+#A is the larger file 
 if len(A_temp.index) >= len(B_temp.index):
     A = A_temp
     B = B_temp
@@ -36,10 +30,47 @@ else:
 X_a = A[np.sort(A.columns.intersection(B.columns))]
 X_b = B[np.sort(B.columns.intersection(A.columns))]
 
-print(X_a)
-print(X_b)
-  
 K = len(X_a.columns)
+
+#Returns jaro_winkler_distance of two strings
+def jaro_winkler_distance(s1, s2):
+    # Jaro distance
+    len_s1, len_s2 = len(s1), len(s2)
+    max_dist = max(len_s1, len_s2) // 2 - 1
+    matches = 0
+    transpositions = 0
+
+    # Find matching characters
+    for i in range(len_s1):
+        start = max(0, i - max_dist)
+        end = min(i + max_dist + 1, len_s2)
+        for j in range(start, end):
+            if s1[i] == s2[j]:
+                matches += 1
+                if i != j:
+                    transpositions += 1
+                break
+
+    if matches == 0:
+        return 0.0
+
+    jaro = (
+        (matches / len_s1)
+        + (matches / len_s2)
+        + ((matches - transpositions / 2) / matches)
+    ) / 3
+
+    # Winkler modification
+    prefix_len = 0
+    for i in range(min(len_s1, len_s2)):
+        if s1[i] == s2[i]:
+            prefix_len += 1
+        else:
+            break
+
+    jaro_winkler = jaro + (0.1 * prefix_len * (1 - jaro))
+    
+    return round(jaro_winkler, 2) 
 
 ## Filling in Comparison Vectors (Gamma Vectors):
 
@@ -55,30 +86,19 @@ def fill_comparison_arrays(recordA:pd.DataFrame,recordB:pd.DataFrame) -> np.ndar
     for a in range(N_a):
         for b in range(N_b):
             for k in range(K):
-                if X_a.iat[a,k] == X_b.iat[b,k]:
-                    comparison_arrays[k, ((N_b*a) + b)] = 1
-                else:
-                    comparison_arrays[k, ((N_b*a) + b)] = 0
-
-    ## Converting the matrix of comparison vectors to a pandas DataFrame
-    # return_comparison_arrays = pd.DataFrame(index=range(N_a), columns=range(N_b))
-    # for a in range(N_a):
-    #     for b in range(N_b):
-    #         return_comparison_arrays.iat[a, b] = comparison_arrays[a,b]
-
+                comparison_arrays[k, ((N_b*a) + b)] = jaro_winkler_distance(str(X_a.iat[a,k]), str(X_b.iat[b,k]))
     return(comparison_arrays)
 
 test_comp_array = fill_comparison_arrays(A,B)
-print(test_comp_array)
 
-pandas_comp_array = pd.DataFrame(index=range(K), columns=range(N_a*N_b))
-for a in range(N_a):
-    for b in range(N_b):
-            for k in range(K):
-                pandas_comp_array.iat[k, N_b*a + b] = test_comp_array[k, N_b*a + b]
+# pandas_comp_array = pd.DataFrame(index=range(K), columns=range(N_a*N_b))
+# for a in range(N_a):
+#     for b in range(N_b):
+#             for k in range(K):
+#                 pandas_comp_array.iat[k, N_b*a + b] = test_comp_array[k, N_b*a + b]
 
-print("Comparison Array:")
-print(pandas_comp_array)
+# print("Comparison Array:")
+# print(pandas_comp_array)
 
 ## Sampling Theta Values for Comparison Vectors:
 
@@ -130,7 +150,6 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
             b_unlinked = list(filter(lambda x: x != None, b_link_status)) 
             num_links = N_b - len(b_unlinked)
 
-
             # TODO: make neat: 
             def likelihood_ratio(a, b) -> float: 
                 m_lh = 1
@@ -157,7 +176,6 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
             
             denom = [sum(num)] * len(num)
             link_probs = [i / j for i, j in zip(num, denom)]
-           # print(link_probs)
 
             #samples b_unlinked index from the , creates a new link at that b with probability associated with that  b 
             new_link_index = (np.random.choice([i for i in range(len(link_probs))], 1, True, link_probs))[0]   
@@ -171,7 +189,6 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
     for a in range(N_a):
         for b in range(N_b):
             C_return.iat[a, b] = C[N_b*a +b]
-    # print(C, t)
     return(theta_values,C_return)
 
 
