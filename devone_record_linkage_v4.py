@@ -1,9 +1,7 @@
-### DEVONE IMPLEMENTATION V2: Here gamma values are stored in a 1D array of length Na x Nb 
+### DEVONE IMPLEMENTATION V4: (0,1) agreement level determined by jw-distance threshhold 
 
 import numpy as np
-
 import pandas as pd
-
 import math as math
 
 ## Initilizating Datasets From CSV Files:
@@ -13,8 +11,8 @@ A_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.
 B_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv2.csv")
 
 ## Global Variables:
-
-#A is the larger file 
+N_a = 0
+N_b = 0
 if len(A_temp.index) >= len(B_temp.index):
     A = A_temp
     B = B_temp
@@ -30,7 +28,12 @@ else:
 X_a = A[np.sort(A.columns.intersection(B.columns))]
 X_b = B[np.sort(B.columns.intersection(A.columns))]
 
+print(X_a)
+print(X_b)
+  
 K = len(X_a.columns)
+
+
 
 #Returns jaro_winkler_distance of two strings
 def jaro_winkler_distance(s1, s2):
@@ -68,9 +71,10 @@ def jaro_winkler_distance(s1, s2):
         else:
             break
 
-    jaro_winkler = jaro + (0.1 * prefix_len * (1 - jaro))
+    jaro_winkler = round(jaro + (0.1 * prefix_len * (1 - jaro)), 1)
+    if jaro_winkler > 1: jaro_winkler = 1
     
-    return round(jaro_winkler, 2) 
+    return jaro_winkler
 
 ## Filling in Comparison Vectors (Gamma Vectors):
 
@@ -86,19 +90,30 @@ def fill_comparison_arrays(recordA:pd.DataFrame,recordB:pd.DataFrame) -> np.ndar
     for a in range(N_a):
         for b in range(N_b):
             for k in range(K):
-                comparison_arrays[k, ((N_b*a) + b)] = jaro_winkler_distance(str(X_a.iat[a,k]), str(X_b.iat[b,k]))
+                if jaro_winkler_distance(str(X_a.iat[a,k]), str(X_b.iat[b,k])) >= jaro_winkler_distance(str('a'*len(str(X_a.iat[a,k]))), str('a'*(len(str(X_b.iat[b,k])) -1)) + 'b'):
+                    comparison_arrays[k, ((N_b*a) + b)] = 1
+                else:
+                    comparison_arrays[k, ((N_b*a) + b)] = 0
+
+    ## Converting the matrix of comparison vectors to a pandas DataFrame
+    # return_comparison_arrays = pd.DataFrame(index=range(N_a), columns=range(N_b))
+    # for a in range(N_a):
+    #     for b in range(N_b):
+    #         return_comparison_arrays.iat[a, b] = comparison_arrays[a,b]
+
     return(comparison_arrays)
 
 test_comp_array = fill_comparison_arrays(A,B)
+print(test_comp_array)
 
-# pandas_comp_array = pd.DataFrame(index=range(K), columns=range(N_a*N_b))
-# for a in range(N_a):
-#     for b in range(N_b):
-#             for k in range(K):
-#                 pandas_comp_array.iat[k, N_b*a + b] = test_comp_array[k, N_b*a + b]
+pandas_comp_array = pd.DataFrame(index=range(K), columns=range(N_a*N_b))
+for a in range(N_a):
+    for b in range(N_b):
+            for k in range(K):
+                pandas_comp_array.iat[k, N_b*a + b] = test_comp_array[k, N_b*a + b]
 
-# print("Comparison Array:")
-# print(pandas_comp_array)
+print("Comparison Array:")
+print(pandas_comp_array)
 
 ## Sampling Theta Values for Comparison Vectors:
 
@@ -150,6 +165,7 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
             b_unlinked = list(filter(lambda x: x != None, b_link_status)) 
             num_links = N_b - len(b_unlinked)
 
+
             # TODO: make neat: 
             def likelihood_ratio(a, b) -> float: 
                 m_lh = 1
@@ -176,6 +192,7 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
             
             denom = [sum(num)] * len(num)
             link_probs = [i / j for i, j in zip(num, denom)]
+           # print(link_probs)
 
             #samples b_unlinked index from the , creates a new link at that b with probability associated with that  b 
             new_link_index = (np.random.choice([i for i in range(len(link_probs))], 1, True, link_probs))[0]   
@@ -189,6 +206,7 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
     for a in range(N_a):
         for b in range(N_b):
             C_return.iat[a, b] = C[N_b*a +b]
+    # print(C, t)
     return(theta_values,C_return)
 
 
