@@ -304,7 +304,6 @@ LinkDesignation.index=Unique_AID
 
 
 # loops through gamma matrix; for every pairing selected to be "fixed", sets known and C val to 1
-
 for i in range(0,amount_known):
     SuperGamma.Known[SuperGamma.A_ID==fix[i]]=1
     SuperGamma.Known[SuperGamma.B_ID==fix[i]]=1
@@ -563,11 +562,14 @@ for t in range(0,nsim):
         if B_linked.size==0: #This is really only for the first iteration for t, first few for i
           B_unlinked=np.unique(SuperGamma.B_ID[SuperGamma.Known==0])
           #B_unlinked_prior=np.unique(SuperGamma.B_ID[np.logical_and(SuperGamma.Known==1)])
+
           B_unlinked_prior=np.setdiff1d(np.unique(SuperGamma.B_ID[SuperGamma.Known==1]), B_linked_prior, assume_unique=True)
         else:
           #B_unlinked=np.unique(SuperGamma.B_ID[np.logical_and(SuperGamma.Known==0,SuperGamma.C==0)])
           B_unlinked=np.setdiff1d(np.unique(SuperGamma.B_ID[SuperGamma.Known==0]), B_linked, assume_unique=True)
           
+
+        #set of Bs that are both unlinked and known
           #B_unlinked_prior=np.unique(SuperGamma.B_ID[np.logical_and(SuperGamma.Known==1,SuperGamma.C==0)])
           B_unlinked_prior=np.setdiff1d(np.unique(SuperGamma.B_ID[SuperGamma.Known==1]), B_linked_prior, assume_unique=True)
           

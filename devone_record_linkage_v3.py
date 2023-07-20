@@ -1,4 +1,4 @@
-### DEVONE IMPLEMENTATION V2: Here gamma values are stored in a 1D array of length Na x Nb 
+### DEVONE IMPLEMENTATION V2: Here gamma values are stored in a 1D array of length Na x Nb, and there are L instead of 2 agreement levels (determined by jaro winkler)
 
 import numpy as np
 
@@ -31,6 +31,9 @@ X_a = A[np.sort(A.columns.intersection(B.columns))]
 X_b = B[np.sort(B.columns.intersection(A.columns))]
 
 K = len(X_a.columns)
+
+L_k = np.arange(0, 1.1 ,0.1)
+num_agreement_lvls = len(L_k) # Levels of disagreement (100 for 2 decimal place values of Jaro-Winkler Distance)
 
 #Returns jaro_winkler_distance of two strings
 def jaro_winkler_distance(s1, s2):
@@ -68,9 +71,10 @@ def jaro_winkler_distance(s1, s2):
         else:
             break
 
-    jaro_winkler = jaro + (0.1 * prefix_len * (1 - jaro))
+    jaro_winkler = round(jaro + (0.1 * prefix_len * (1 - jaro)), 1)
+    if jaro_winkler > 1: jaro_winkler = 1
     
-    return round(jaro_winkler, 2) 
+    return jaro_winkler
 
 ## Filling in Comparison Vectors (Gamma Vectors):
 
@@ -89,60 +93,60 @@ def fill_comparison_arrays(recordA:pd.DataFrame,recordB:pd.DataFrame) -> np.ndar
                 comparison_arrays[k, ((N_b*a) + b)] = jaro_winkler_distance(str(X_a.iat[a,k]), str(X_b.iat[b,k]))
     return(comparison_arrays)
 
-test_comp_array = fill_comparison_arrays(A,B)
 
-# pandas_comp_array = pd.DataFrame(index=range(K), columns=range(N_a*N_b))
-# for a in range(N_a):
-#     for b in range(N_b):
-#             for k in range(K):
-#                 pandas_comp_array.iat[k, N_b*a + b] = test_comp_array[k, N_b*a + b]
-
-# print("Comparison Array:")
-# print(pandas_comp_array)
 
 ## Sampling Theta Values for Comparison Vectors:
 
 def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
     #Establishing initial parameters for the Dirchlet Distributions from which we're sampling:
-    theta_M_params = [1,2]
-    theta_U_params = [1,1]
+    M_alpha_priors = np.full(num_agreement_lvls, 1, dtype=int)
+    U_alpha_priors = np.full(num_agreement_lvls, 1, dtype=int)
 
     C = np.full((N_a*N_b), 0)
+    C[N_b* 0 + 0] = 1
+    C[N_b* 1 + 1] = 1
+    C[N_b* 4 + 4] = 1
+    C[N_b* 3 + 13] = 1
 
-    
+
     ## Gibbs Sampler for Theta Values:
-    theta_values = np.full((K, T, 2), fill_value=np.full((1,2), 0, dtype= float), dtype= np.ndarray) # Array with K rows (one for each comparison variable),
-                                                                                            # t columns (one for each number of iterations), and                                                                                             # two theta values in each cell (Theta_M and Theta_U 
-                                                                                            # values for each comparison variable)
+    theta_values = np.full((T, K, 2, num_agreement_lvls), 0.00, dtype=float) # Array with K rows (for number of iterations)
+                                         # F columns (one for each comparison variable), and 
+                                         # two theta values vectors in each cell (Theta_M and Theta_U 
+                                         # vectors of length L_f)
+    #fills dirichlet parameters for theta_M  or theta_U depending on if theta_M == True or False
+
+    def alpha_fill(k: int, theta_M: bool) -> np.array: 
+        a_lst = []
+        for l in range(num_agreement_lvls):
+            a_kl = 0 
+            for a in range(N_a): 
+                for b in range(N_b): 
+                    #a_kl += (comparison_arrays[k, N_b* a + b] != None)*(comparison_arrays[k, N_b* a + b] == L_k[l])*(C[N_b* a + b] == theta_M)
+                    a_kl += (comparison_arrays[k, N_b* a + b] == L_k[l])*(C[N_b* a + b] == theta_M)
+            a_lst.append(a_kl + M_alpha_priors[l])
+        m_alphas = np.array(a_lst)
+        return m_alphas
+          
+    
     for t in range(T):
         #Step 1: sampling thetas 
         for gamma_col in range(K):
             ## Sampling for Theta_M Values:
-            # First Parameter for Dirichlet Distribution:
-            #TODO: check this!!
-            alpha_M_0 = theta_M_params[0] + np.sum(comparison_arrays[gamma_col, :]*C)
-            # Second Parameter for Dirichlet Distribution:
-            alpha_M_1 = theta_M_params[1] + np.sum((1- comparison_arrays[gamma_col, :])*C)
-
-            theta_values[gamma_col,t,0] = np.random.dirichlet(np.array([alpha_M_0, alpha_M_1]))
+            M_alpha_vec = alpha_fill(gamma_col, True)
+            theta_values[t,gamma_col, 0] = np.random.dirichlet(M_alpha_vec)
             ## Sampling for Theta_U Values:
-            # First Parameter for Dirichlet Distribution:
-            alpha_U_0 = theta_U_params[0] + np.sum(comparison_arrays[gamma_col, :]*(1-C))
-            # Second Parameter for Dirichlet Distribution:
-            alpha_U_1 = theta_U_params[1] + np.sum((1- comparison_arrays[gamma_col, :])*(1-C))
-
-            theta_values[gamma_col,t,1] = np.random.dirichlet(np.array([alpha_U_0, alpha_U_1]))
+            U_alpha_vec = alpha_fill(gamma_col, False)
+            theta_values[t,gamma_col, 1] = np.random.dirichlet(U_alpha_vec)
 
         #Step 2: sampling C
         #C[t+1]: empty
         C = np.full((N_a*N_b), 0)
 
-        # For every file a (ie. every row of C)
-        # b_unlked_lst= [b for b in range(N_b)]
-        # b_unlinked = {b: 0 for b in b_unlinked_lst}in
         row_order_list = ([a for a in range(N_a)])
-        np.random.shuffle(row_order_list)
+        #np.random.shuffle(row_order_list)
         for a in row_order_list: 
+            print(a)
             # list of length N_b: for each b, elt is b's index if b does not have a link, else None
             b_links = lambda  b : [C[N_b* a_n + b]  for a_n in range(N_a)]
             b_link_status = [b if sum(b_links(b))  == 0 else None for b in range(N_b)]
@@ -155,13 +159,13 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
                 m_lh = 1
                 u_lh = 1
                 for k in range(K): 
-                    theta_k_m0 = theta_values[k, t, 0][0]
-                    theta_k_m1 = theta_values[k, t, 0][1]
-                    m_lh = m_lh * (theta_k_m0)**comparison_arrays[k, (N_b*a + b)] * (theta_k_m1)**(1-comparison_arrays[k, (N_b*a + b)])
+                    lvl = comparison_arrays[k, N_b* a + b]
 
-                    theta_k_u0 = theta_values[k, t, 1][0]
-                    theta_k_u1 = theta_values[k, t, 1][1]
-                    u_lh = u_lh * (theta_k_u0)**comparison_arrays[k, (N_b*a + b)] * (theta_k_u1)**(1-comparison_arrays[k, (N_b*a + b)])
+                    theta_mkl = theta_values[t, k, 0, int((num_agreement_lvls -1)*lvl)]
+                    m_lh = m_lh * theta_mkl
+
+                    theta_ukl = theta_values[t, k, 1, int((num_agreement_lvls -1)*lvl)]
+                    u_lh = u_lh * theta_ukl
                 
                 lr = m_lh/u_lh 
                 return lr
@@ -182,7 +186,7 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
             
             #last index in index list == no_link. if it selected a valid index, we want 
             if(new_link_index != len(b_unlinked)):   
-                #print(a, b_unlinked[new_link_index], link_probs[new_link_index])
+                print(a, b_unlinked[new_link_index], link_probs[new_link_index])
                 C[N_b*a + b_unlinked[new_link_index]] = 1
     
     C_return = pd.DataFrame(index=range(N_a), columns=range(N_b))
@@ -191,8 +195,8 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
             C_return.iat[a, b] = C[N_b*a +b]
     return(theta_values,C_return)
 
-
-theta_values = theta_and_c_sampler(test_comp_array, 900)
+test_comp_array = fill_comparison_arrays(A,B)
+theta_values = theta_and_c_sampler(test_comp_array, 100)
 # print("Theta Values:")
 # print(theta_values[0])
 print("C Structure:")
