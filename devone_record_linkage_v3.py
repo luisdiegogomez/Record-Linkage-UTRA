@@ -1,4 +1,4 @@
-### DEVONE IMPLEMENTATION V5: Power prior introduced 
+### DEVONE IMPLEMENTATION V3: Power prior introduced 
 
 import numpy as np
 import pandas as pd
