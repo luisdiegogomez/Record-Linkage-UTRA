@@ -1,4 +1,4 @@
-### DEVONE IMPLEMENTATION V2: Here gamma values are stored in a 1D array of length Na x Nb 
+### DEVONE IMPLEMENTATION V1: 2 disagreement levels (0,1)
 
 import numpy as np
 
@@ -82,7 +82,6 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
     theta_U_params = [1,1]
 
     C = np.full((N_a*N_b), 0)
-
     
     ## Gibbs Sampler for Theta Values:
     theta_values = np.full((K, T, 2), fill_value=np.full((1,2), 0, dtype= float), dtype= np.ndarray) # Array with K rows (one for each comparison variable),
