@@ -127,7 +127,7 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
             a_lst.append(a_kl + M_alpha_priors[l])
         m_alphas = np.array(a_lst)
         return m_alphas
-          
+    
      # TODO: make neat: 
     def likelihood_ratio(a, b) -> float: 
         m_lh = 1
