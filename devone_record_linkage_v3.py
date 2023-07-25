@@ -1,4 +1,4 @@
-### DEVONE IMPLEMENTATION V3: Here gamma values are stored in a 1D array of length Na x Nb, and there are L instead of 2 agreement levels (determined by jaro winkler)
+### DEVONE IMPLEMENTATION V3: L instead of 2 agreement levels (determined by jaro winkler)
 
 import numpy as np
 
