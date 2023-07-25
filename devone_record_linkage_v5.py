@@ -32,7 +32,20 @@ print(X_a)
 print(X_b)
   
 K = len(X_a.columns)
+
 known_lvl =0.3
+
+known_pairs = 
+
+A_shuff = np.arange(N_a)
+np.random.shuffle(A_shuff)
+matches = A_shuff[:round(N_a*N_b*known_lvl)]
+B_shuff = np.arange(n_2)
+np.random.shuffle(B_shuff)
+ind = 0
+for m in matches:
+    Z_values[0,B_shuff[ind]] = m
+    ind += 1
 
 ## Filling in Comparison Vectors (Gamma Vectors):
 
@@ -82,7 +95,6 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
 
     C = np.full((N_a*N_b), 0)
 
-    
     ## Gibbs Sampler for Theta Values:
     theta_values = np.full((K, T, 2), fill_value=np.full((1,2), 0, dtype= float), dtype= np.ndarray) # Array with K rows (one for each comparison variable),
                                                                                             # t columns (one for each number of iterations), and                                                                                             # two theta values in each cell (Theta_M and Theta_U 
@@ -115,6 +127,23 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
         # b_unlinked = {b: 0 for b in b_unlinked_lst}in
         row_order_list = ([a for a in range(N_a)])
         np.random.shuffle(row_order_list)
+
+         # TODO: make neat: 
+        def likelihood_ratio(a, b) -> float: 
+            m_lh = 1
+            u_lh = 1
+            for k in range(K): 
+                theta_k_m0 = theta_values[k, t, 0][0]
+                theta_k_m1 = theta_values[k, t, 0][1]
+                m_lh = m_lh * (theta_k_m0)**comparison_arrays[k, (N_b*a + b)] * (theta_k_m1)**(1-comparison_arrays[k, (N_b*a + b)])
+
+                theta_k_u0 = theta_values[k, t, 1][0]
+                theta_k_u1 = theta_values[k, t, 1][1]
+                u_lh = u_lh * (theta_k_u0)**comparison_arrays[k, (N_b*a + b)] * (theta_k_u1)**(1-comparison_arrays[k, (N_b*a + b)])
+            
+            lr = m_lh/u_lh 
+            return lr
+        
         for a in row_order_list: 
             # list of length N_b: for each b, elt is b's index if b does not have a link, else None
             b_links = lambda  b : [C[N_b* a_n + b]  for a_n in range(N_a)]
@@ -122,23 +151,6 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int) -> tuple:
             # # list of indices of unlinked b files: we will be choosing a link between file a and one of these unlinked bs
             b_unlinked = list(filter(lambda x: x != None, b_link_status)) 
             num_links = N_b - len(b_unlinked)
-
-
-            # TODO: make neat: 
-            def likelihood_ratio(a, b) -> float: 
-                m_lh = 1
-                u_lh = 1
-                for k in range(K): 
-                    theta_k_m0 = theta_values[k, t, 0][0]
-                    theta_k_m1 = theta_values[k, t, 0][1]
-                    m_lh = m_lh * (theta_k_m0)**comparison_arrays[k, (N_b*a + b)] * (theta_k_m1)**(1-comparison_arrays[k, (N_b*a + b)])
-
-                    theta_k_u0 = theta_values[k, t, 1][0]
-                    theta_k_u1 = theta_values[k, t, 1][1]
-                    u_lh = u_lh * (theta_k_u0)**comparison_arrays[k, (N_b*a + b)] * (theta_k_u1)**(1-comparison_arrays[k, (N_b*a + b)])
-                
-                lr = m_lh/u_lh 
-                return lr
             
             #if there are no more unlinked bs, we just go on to next iteration of the sampler 
             if(b_unlinked == []): 
