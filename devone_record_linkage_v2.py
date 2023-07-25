@@ -1,4 +1,4 @@
-### DEVONE IMPLEMENTATION V3: L instead of 2 agreement levels (determined by jaro winkler)
+### DEVONE IMPLEMENTATION V2: L instead of 2 agreement levels (determined by jaro winkler)
 
 import numpy as np
 
