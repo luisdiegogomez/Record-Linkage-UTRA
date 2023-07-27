@@ -35,6 +35,11 @@ K = len(X_a.columns)
 L_k = np.arange(0, 1.1 ,0.1)
 L_k_n = len(L_k) # Levels of disagreement (100 for 2 decimal place values of Jaro-Winkler Distance)
 
+known_matches_indexes = [0, (N_b * 1 + 1), (N_b * 2+ 2), (N_b * 3 + 3), (N_b * 4 + 4)]
+known_matches_set = set(known_matches_indexes)
+
+known_nonmatches_indexes = [(N_b * 5 + 5)]
+known_nonmatches_set = set(known_nonmatches_indexes)
 
 #Returns jaro_winkler_distance of two strings
 def jaro_winkler_distance(s1, s2):
@@ -97,7 +102,17 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
                                          # F columns (one for each comparison variable), and 
                                          # two theta values vectors in each cell (Theta_M and Theta_U 
                                          # vectors of length L_f)
-    C = np.full((N_a*N_b), 0)
+    #Initializing C structure
+    C = np.full(((N_a*N_b),2), 0) # 2D array of size (N_a * N_b) x 2, where: 
+                                    #C[ab, 0] => link status of pair ab and
+                                    ##C[ab, 1] => known/unknown status of pair ab 
+
+    for known_match in known_matches_set: 
+        C[known_match, 0] = 1
+        C[known_match, 1] = 1
+    for known_nonmatch in known_nonmatches_set: 
+        C[known_nonmatch, 0] = 0
+        C[known_nonmatch, 1] = 1
 
     #fills dirichlet parameters for theta_M  or theta_U depending on if theta_M == True or False
     def alpha_fill(k: int, theta_type: bool) -> np.ndarray: 
@@ -138,26 +153,32 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
             theta_values[t,k, 1] = np.random.dirichlet(U_alpha_vec)
 
         #Step 2: sampling C
-        #C[t+1]: empty 
-        C = np.full((N_a*N_b), 0)
+        #C[t+1]: for all unknown (ie unfixed) pairs, set link value to 0 
+        C[:,0]= np.where(C[:,1] == 0, 0, C[:,0]) 
 
         row_order_list = ([a for a in range(N_a)])
         np.random.shuffle(row_order_list)
 
         for a in row_order_list: 
-            # list of length N_b: for each b, elt is b's index if b does not have a link, else None
-            b_links = lambda  b : [C[N_b* a_n + b]  for a_n in range(N_a)]
-            b_link_status = [b if sum(b_links(b))  == 0 else None for b in range(N_b)]
-            # # list of indices of unlinked b files: we will be choosing a link between file a and one of these unlinked bs
-            b_unlinked = list(filter(lambda x: x != None, b_link_status)) 
-            num_links = N_b - len(b_unlinked)
+            #indices of C where C[i, 0] == 0 (nonlink) and C[i, 1] == 0 (unknown)
+            unlinked_unknown_pairs = np.transpose(np.nonzero(C[:,0] == 0 and C[:,1] ==0))[:,0]
+            # (N_b*a + b) mod N_b returns b index of pair
+            b_unlinked_unknown = unlinked_unknown_pairs % N_b
+
+            #indices of C where C[i, 0] == 0 (nonlink) and C[i, 1] == 1 (known)
+            unlinked_known_pairs = np.transpose(np.nonzero(C[:,0] == 0 and C[:,1] ==1))[:,0]
+            # (N_b*a + b) mod N_b returns b index of pair
+            b_unlinked_known = unlinked_known_pairs % N_b
+            
+        
+            num_links = N_b - len(b_unlinked_unknown)
             
             #if there are no more unlinked bs, we just go on to next iteration of the sampler 
-            if(b_unlinked == []): 
+            if(b_unlinked_unknown == []): 
                 break
             
             prob_no_link = (N_a - num_links)*(N_b - num_links)/(num_links + 1)
-            num = [likelihood_ratio(a, b) for b in b_unlinked]
+            num = [likelihood_ratio(a, b) for b in b_unlinked_unknown]
             num.append(prob_no_link)
             
             denom = [sum(num)] * len(num)
@@ -167,8 +188,8 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
             new_link_index = (np.random.choice([i for i in range(len(link_probs))], 1, True, link_probs))[0]   
             
             #last index in index list == no_link. if it selected a valid index, we want 
-            if(new_link_index != len(b_unlinked)):   
-                C[N_b*a + b_unlinked[new_link_index]] = 1  
+            if(new_link_index != len(b_unlinked_unknown)):   
+                C[N_b*a + b_unlinked_unknown[new_link_index]] = 1  
             
     C_dataframe = pd.DataFrame(index=range(N_a), columns=range(N_b))
     for a in range(N_a):
