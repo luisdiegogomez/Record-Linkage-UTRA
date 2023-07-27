@@ -169,6 +169,9 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
             unlinked_known_pairs = np.transpose(np.nonzero(C[:,0] == 0 and C[:,1] ==1))[:,0]
             # (N_b*a + b) mod N_b returns b index of pair
             b_unlinked_known = unlinked_known_pairs % N_b
+
+            prior_likelihood = 
+
             
         
             num_links = N_b - len(b_unlinked_unknown)
