@@ -79,12 +79,14 @@ def jaro_winkler_distance(s1, s2):
     return jaro_winkler
 
 ## Filling in Comparison Vectors (Gamma Vectors):
-def fill_comparison_arrays() :
+def fill_comparison_arrays() -> np.ndarray:
     # Filling comparison vectors:
+    comparison_arrays = np.full((K, (N_a*N_b)), fill_value = 0, dtype= float) 
     for a in range(N_a):
         for b in range(N_b):
             for k in range(K):
                 comparison_arrays[k, ((N_b*a) + b)] = jaro_winkler_distance(str(X_a.iat[a,k]), str(X_b.iat[b,k]))
+    return comparison_arrays
 
 #Gibbs sampler 
 def theta_and_c_sampler(T:int) -> np.ndarray:
@@ -97,7 +99,8 @@ def theta_and_c_sampler(T:int) -> np.ndarray:
                                          # two theta values vectors in each cell (Theta_M and Theta_U 
                                          # vectors of length L_f)
     C = np.full((N_a*N_b), 0)
-    
+    C = np.full((N_a*N_b), 0)
+
     #fills dirichlet parameters for theta_M  or theta_U depending on if theta_M == True or False
     def alpha_fill(k: int, theta_type: bool) -> np.ndarray: 
         a_lst = []
@@ -167,7 +170,6 @@ def theta_and_c_sampler(T:int) -> np.ndarray:
             
             #last index in index list == no_link. if it selected a valid index, we want 
             if(new_link_index != len(b_unlinked)):   
-                # print(a, b_unlinked[new_link_index], link_probs[new_link_index])
                 C[N_b*a + b_unlinked[new_link_index]] = 1  
     return(C)
 
@@ -179,5 +181,10 @@ for a in range(N_a):
     for b in range(N_b):
         C_dataframe.iat[a, b] = theta_values[N_b*a +b]
 
+    return(C_dataframe, theta_values )
+
+comparison_arrays = fill_comparison_arrays()
+c_and_theta_vals = theta_and_c_sampler(comparison_arrays, 100)
+
 print("C Structure:")
-print(C_dataframe)
+print(c_and_theta_vals[0])
