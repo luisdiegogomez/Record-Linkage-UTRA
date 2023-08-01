@@ -175,16 +175,13 @@ def theta_and_c_sampler(T:int) -> np.ndarray:
 
 fill_comparison_arrays()
 
-theta_values = theta_and_c_sampler(10)
+C = theta_and_c_sampler(10)
 C_dataframe = pd.DataFrame(index=range(N_a), columns=range(N_b))
 for a in range(N_a):
     for b in range(N_b):
         C_dataframe.iat[a, b] = theta_values[N_b*a +b]
 
-    return(C_dataframe, theta_values )
-
-comparison_arrays = fill_comparison_arrays()
-c_and_theta_vals = theta_and_c_sampler(comparison_arrays, 100)
+fill_comparison_arrays()
 
 print("C Structure:")
-print(c_and_theta_vals[0])
+print(C)
