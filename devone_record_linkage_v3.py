@@ -1,3 +1,7 @@
+
+
+
+
 ### DEVONE IMPLEMENTATION V2: L instead of 2 agreement levels (determined by jaro winkler)
 
 import numpy as np
@@ -34,9 +38,6 @@ K = len(X_a.columns)
 
 L_k = np.arange(0, 1.1 ,0.1)
 L_k_n = len(L_k) # Levels of disagreement (100 for 2 decimal place values of Jaro-Winkler Distance)
-
-known_pairs_indexes = [0, (N_b * 1 + 1), (N_b * 2+ 2), (N_b * 3 + 3), (N_b * 4 + 4)]
-known_pairs_set = set(known_pairs_indexes)
 
 #Returns jaro_winkler_distance of two strings
 def jaro_winkler_distance(s1, s2):
@@ -89,8 +90,10 @@ def fill_comparison_arrays() -> np.ndarray:
                 comparison_arrays[k, ((N_b*a) + b)] = jaro_winkler_distance(str(X_a.iat[a,k]), str(X_b.iat[b,k]))
     return comparison_arrays
 
+
 #Gibbs sampler 
-def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
+def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int, C_init: np.ndarray, alpha: float):
+    C = C_init
     #Establishing initial parameters for the Dirchlet Distributions from which we're sampling:
     M_alpha_priors = np.full(L_k_n, 1, dtype=int)
     U_alpha_priors = np.full(L_k_n, 1, dtype=int)
@@ -99,7 +102,6 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
                                          # F columns (one for each comparison variable), and 
                                          # two theta values vectors in each cell (Theta_M and Theta_U 
                                          # vectors of length L_f)
-    C = np.full((N_a*N_b), 0)
 
     #fills dirichlet parameters for theta_M  or theta_U depending on if theta_M == True or False
     def alpha_fill(k: int, theta_type: bool) -> np.ndarray: 
@@ -108,9 +110,9 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
             a_kl = 0 
             for a in range(N_a): 
                 for b in range(N_b): 
-                    a_kl += (comparison_arrays[k, N_b* a + b] == round(L_k[l],1))*(C[N_b* a + b] == theta_type)
-            if theta_type: a_lst.append(a_kl + M_alpha_priors[l])
-            else: a_lst.append(a_kl + U_alpha_priors[l])
+                    a_kl += (comparison_arrays[k, N_b* a + b] == round(L_k[l],1))*(C[N_b* a + b, 0] == theta_type)
+            if theta_type: a_lst.append((a_kl + M_alpha_priors[l]))
+            else: a_lst.append((a_kl + U_alpha_priors[l]))
         alpha_params = np.array(a_lst)
         return alpha_params
     
@@ -118,7 +120,7 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
         m_lh = 1
         u_lh = 1
         for k in range(K): 
-            lvl = comparison_arrays[k, N_b* a + b]
+            lvl = comparison_arrays[k, int(N_b* a + b)]
 
             theta_mkl = theta_values[t, k, 0, int((L_k_n -1)*lvl)]
             m_lh = m_lh * theta_mkl
@@ -140,35 +142,36 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
             theta_values[t,k, 1] = np.random.dirichlet(U_alpha_vec)
 
         #Step 2: sampling C
-        #C[t+1]: empty 
-        C = np.full((N_a*N_b), 0)
+        #C[t+1]: for all unknown (ie unfixed) pairs, set link value to 0 
+        C[:,0]= np.where(C[:,1] == 0, 0, C[:,0]) 
+
+        #indices of C where C[i, 1] == 1 (known)
+        # known_pairs = np.nonzero((C[:,1] == 1))[0]
+        # # (N_b*a + b) mod N_b returns b index of pair; ((N_b*a + b) - b)/N_a returns a index of pair 
+        # known_pair_bs = known_pairs % N_b
+        # known_pair_as = (known_pairs - known_pair_bs)/N_b
+
+        # if len(known_pairs) != 0:    
+        #     #joint likelihood ratio for all known pairs
+        #     prior_likelihood = math.prod([likelihood_ratio(a, b) for a, b in zip(known_pair_as, known_pair_bs)])
+        #     power_prior = prior_likelihood ** alpha
+        # else: 
+        #     power_prior = 0 
 
         row_order_list = ([a for a in range(N_a)])
         np.random.shuffle(row_order_list)
-
         for a in row_order_list: 
-            # list of length N_b: for each b, elt is b's index if b does not have a link, else None
-            #b_links = lambda  b : [C[N_b* a_n + b] for a_n in range(N_a)]
-            # b_link_status = [b if sum(b_links(b))  == 0  else None for b in range(N_b)]
+            #indices of C where C[i, 0] == 0 (nonlink) and C[i, 1] == 0 (unknown)
+            unlinked_unknown_pairs = np.nonzero((C[:,0] == 0) & (C[:,1] ==0))[0]
+            #indices of C where C[i, 0] == 0 (nonlink) and C[i, 1] == 1 (unknown)
+            unlinked_known_pairs = np.nonzero((C[:,0] == 0) & (C[:,1] ==1))[0]
             
-            # list of indices of unlinked b files: we will be choosing a link between file a and one of these unlinked bs
-            # b_unlinked_unknown = list(filter(lambda x: x != None, b_link_status)) 
+            # (N_b*a + b) mod N_b returns b index of pair
+            b_unlinked_unknown = list(set(unlinked_unknown_pairs % N_b))
+            b_unlinked_known =list(set(unlinked_known_pairs % N_b))
 
-
-            b_uk_link_status = [0] * N_b
-            b_k_link_status = [0] * N_b
-            for b in range(N_b): 
-                for a_n in range(N_a): 
-                    if C[N_b* a_n + b] == 1: 
-                        if N_b* a_n + b in known_pairs_set: 
-                            b_uk_link_status[b] += 1
-                        else: 
-                            b_k_link_status[b] += 1
-
-            b_unlinked_unknown = list(filter(lambda x: x != None, [b if b_uk_link_status[b] == 0 else None for b in range(N_b)]))
-            b_unlinked_known = list(filter(lambda x: x != None, [b if b_k_link_status[b] == 0 else None for b in range(N_b)]))
-
-            num_links = N_b - len(b_unlinked_unknown)
+            num_links = N_b - len(b_unlinked_unknown) - len(b_unlinked_known)
+            
             #if there are no more unlinked bs, we just go on to next iteration of the sampler 
             if(b_unlinked_unknown == []): 
                 break
@@ -176,27 +179,43 @@ def theta_and_c_sampler(comparison_arrays:np.ndarray, T:int):
             prob_no_link = (N_a - num_links)*(N_b - num_links)/(num_links + 1)
             num = [likelihood_ratio(a, b) for b in b_unlinked_unknown]
             num.append(prob_no_link)
-
-            total_prior_lh = sum([likelihood_ratio(a, b) for b in b_unlinked_known])
-            denom = [sum(num) + total_prior_lh] * len(num)
+            
+            #TODO: CHECK: power prior implementation 
+            denom = [sum(num)] * len(num)
             link_probs = [i / j for i, j in zip(num, denom)]
+            link_probs_sum = sum(link_probs)
+            link_probs_normalized = link_probs/link_probs_sum
 
             #samples b_unlinked index from the , creates a new link at that b with probability associated with that  b 
-            new_link_index = (np.random.choice([i for i in range(len(link_probs))], 1, True, link_probs))[0]   
+            new_link_index = (np.random.choice([i for i in range(len(link_probs))], 1, True, link_probs_normalized))[0]   
             
             #last index in index list == no_link. if it selected a valid index, we want 
             if(new_link_index != len(b_unlinked_unknown)):   
-                C[N_b*a + b_unlinked_unknown[new_link_index]] = 1  
-            
+                C[N_b*a + b_unlinked_unknown[new_link_index], 0] = 1  
+    
+    return(C, theta_values)
+
+def C_matrix_to_df(C): 
     C_dataframe = pd.DataFrame(index=range(N_a), columns=range(N_b))
     for a in range(N_a):
         for b in range(N_b):
-            C_dataframe.iat[a, b] = C[N_b*a +b]
-
-    return(C_dataframe, theta_values )
+            C_dataframe.iat[a, b] = C[N_b*a +b, 0]
+    return C_dataframe
 
 comparison_arrays = fill_comparison_arrays()
-c_and_theta_vals = theta_and_c_sampler(comparison_arrays, 100)
+C_init = np.full(((N_a * N_b), 2), 0)
+
+C_init_prior = np.full(((N_a * N_b), 2), 0)
+C_init_prior[0,0] = 1 
+C_init_prior[0,1] = 1 
+C_init_prior[(N_b * 1 + 1), 0] = 1
+C_init_prior[(N_b * 1 + 1), 1] = 1
+C_init_prior[(N_b * 3 + 7), 0] = 1
+C_init_prior[(N_b * 3 + 7), 1] = 0
+
+
+c_and_theta_vals = theta_and_c_sampler(comparison_arrays, 100, C_init_prior, 1)
 
 print("C Structure:")
-print(c_and_theta_vals[0])
+print(C_matrix_to_df(c_and_theta_vals[0]))
+
