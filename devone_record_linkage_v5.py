@@ -176,7 +176,10 @@ def theta_and_c_sampler(T:int, C_init: np.ndarray, alpha: float):
             
             #last index in index list == no_link. if it selected a valid index, we want 
             if(new_link_index != len(b_unlinked_unknown)):   
-                C[N_b*a + b_unlinked_unknown[new_link_index], 0] = 1  
+                C[N_b*a + b_unlinked_unknown[new_link_index], 0] = 1
+                for k in range(K):
+                    temp_l_instances[k,int(10*comparison_arrays[k,(N_b*a + b_unlinked_unknown[new_link_index])]),2] -= 1
+                    temp_l_instances[k,int(10*comparison_arrays[k,(N_b*a + b_unlinked_unknown[new_link_index])]),3] += 1  
     
     return(C, theta_values)
 
