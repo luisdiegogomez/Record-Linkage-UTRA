@@ -10,11 +10,14 @@ import pandas as pd
 
 import math as math
 
+import time
+start_time = time.time()
+
 ## Initilizating Datasets From CSV Files:
 
 # Make sure file paths are based on wherever your files are locally 
-A_temp = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\generated_csv1.csv")
-B_temp = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\generated_csv2.csv")
+A_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.csv")
+B_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv2.csv")
 
 ## Global Variables:
 
@@ -218,4 +221,4 @@ c_and_theta_vals = theta_and_c_sampler(comparison_arrays, 100, C_init_prior, 1)
 
 print("C Structure:")
 print(C_matrix_to_df(c_and_theta_vals[0]))
-
+print("--- %s seconds ---" % (time.time() - start_time))

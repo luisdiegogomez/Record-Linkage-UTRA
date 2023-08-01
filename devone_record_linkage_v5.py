@@ -9,11 +9,14 @@ import math as math
 # pip install jaro-winkler
 import jaro
 
+import time
+start_time = time.time()
+
 ## Initilizating Datasets From CSV Files:
 
 # Make sure file paths are based on wherever your files are locally 
-A_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.csv")
-B_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv2.csv")
+A_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/2015 Shortened.csv")
+B_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/2015 Shortened.csv")
 
 ## Global Variables:
 
@@ -39,7 +42,7 @@ L_k = np.arange(0, 1.1 ,0.1)
 L_k_n = len(L_k) # Levels of disagreement (100 for 2 decimal place values of Jaro-Winkler Distance)
 
 comparison_arrays = np.full((K, (N_a*N_b)), fill_value = 0, dtype= float)
-# Order of stored l instacnes: known non-matches, known matches, unknown non-matches, unknown matches
+# Order of stored l instances: known matches (0), known non-matches (1), unknown matches (2), unknown non-matches (3)
 base_l_instaces = np.full((K, L_k_n, 4), fill_value=0, dtype=int)
 
 C_init = np.full(((N_a * N_b), 2), 0)
@@ -70,7 +73,7 @@ def fill_comparison_arrays():
                 # Unknown match counter  
                 elif (C_init[N_b*a + b, 0] == 1) and (C_init[N_b*a + b, 1] == 0):
                     base_l_instaces[k,int((10*distance)),2] += 1
-                # Unknown match counter  
+                # Unknown non-match counter  
                 elif (C_init[N_b*a + b, 0] == 0) and (C_init[N_b*a + b, 1] == 0):
                     base_l_instaces[k,int((10*distance)),3] += 1
 
@@ -94,9 +97,9 @@ def theta_and_c_sampler(T:int, C_init: np.ndarray, alpha: float):
         a_lst = []
         for l in range(L_k_n): 
             if theta_type:
-                a_lst.append((l_instances[k,l,1]**alpha + l_instances[k,l,3] + M_alpha_priors[l]))
+                a_lst.append((l_instances[k,l,0]**alpha + l_instances[k,l,2] + M_alpha_priors[l]))
             else: 
-                a_lst.append((l_instances[k,l,0]**alpha + l_instances[k,l,2] + U_alpha_priors[l]))
+                a_lst.append((l_instances[k,l,1]**alpha + l_instances[k,l,3] + U_alpha_priors[l]))
         alpha_params = np.array(a_lst)
         return alpha_params
     
@@ -178,8 +181,8 @@ def theta_and_c_sampler(T:int, C_init: np.ndarray, alpha: float):
             if(new_link_index != len(b_unlinked_unknown)):   
                 C[N_b*a + b_unlinked_unknown[new_link_index], 0] = 1
                 for k in range(K):
-                    temp_l_instances[k,int(10*comparison_arrays[k,(N_b*a + b_unlinked_unknown[new_link_index])]),2] -= 1
-                    temp_l_instances[k,int(10*comparison_arrays[k,(N_b*a + b_unlinked_unknown[new_link_index])]),3] += 1  
+                    temp_l_instances[k,int(10*comparison_arrays[k,(N_b*a + b_unlinked_unknown[new_link_index])]),3] -= 1
+                    temp_l_instances[k,int(10*comparison_arrays[k,(N_b*a + b_unlinked_unknown[new_link_index])]),2] += 1  
     
     return(C, theta_values)
 
@@ -205,4 +208,4 @@ c_and_theta_vals = theta_and_c_sampler(10, C_init, 1)
 
 print("C Structure:")
 print(C_matrix_to_df(c_and_theta_vals[0]))
-
+print("--- %s seconds ---" % (time.time() - start_time))
