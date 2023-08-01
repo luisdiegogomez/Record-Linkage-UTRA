@@ -1,4 +1,4 @@
-### DEVONE IMPLEMENTATION V2: L instead of 2 agreement levels (determined by jaro winkler)
+### DEVONE IMPLEMENTATION V5: Power prior and l-instances strucutre implementation
 
 import numpy as np
 
