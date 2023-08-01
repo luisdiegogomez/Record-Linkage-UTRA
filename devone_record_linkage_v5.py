@@ -4,8 +4,6 @@ import numpy as np
 
 import pandas as pd
 
-import math as math
-
 # pip install jaro-winkler
 import jaro
 
@@ -38,17 +36,17 @@ X_b = B[np.sort(B.columns.intersection(A.columns))]
 
 K = len(X_a.columns)
 
-L_k_n = 11 # Levels of disagreement (100 for 2 decimal place values of Jaro-Winkler Distance)
+L_k_n = 2 # Levels of disagreement (100 for 2 decimal place values of Jaro-Winkler Distance)
 
 comparison_arrays = np.full((K, (N_a*N_b)), fill_value = 0, dtype= float)
 # Order of stored l instances: known matches (0), known non-matches (1), unknown matches (2), unknown non-matches (3)
-base_l_instaces = np.full((K, L_k_n, 4), fill_value=0, dtype=int)
+base_l_instances = np.full((K, L_k_n, 4), fill_value=0, dtype=int)
 
 C_init = np.full(((N_a * N_b), 2), 0)
 
 #Returns jaro_winkler_distance of two strings
 def jaro_winkler_distance(s1, s2):
-    jaro_winkler = round(jaro.jaro_winkler_metric(s1,s2),2)
+    jaro_winkler = round(jaro.jaro_winkler_metric(s1,s2))
 
     if jaro_winkler > 1: 
         jaro_winkler = 1.0
@@ -65,16 +63,18 @@ def fill_comparison_arrays():
                 comparison_arrays[k, ((N_b*a) + b)] = distance
                 # Known match counter
                 if (C_init[N_b*a + b, 0] == 1) and (C_init[N_b*a + b, 1] == 1):
-                    base_l_instaces[k,int(((L_k_n - 1)*distance)),0] += 1
+                    base_l_instances[k,int(((L_k_n - 1)*distance)),0] += 1
                 # Known non-match counter
                 elif (C_init[N_b*a + b, 0] == 0) and (C_init[N_b*a + b, 1] == 1):
-                    base_l_instaces[k,int(((L_k_n - 1)*distance)),1] += 1
+                    base_l_instances[k,int(((L_k_n - 1)*distance)),1] += 1
                 # Unknown match counter  
                 elif (C_init[N_b*a + b, 0] == 1) and (C_init[N_b*a + b, 1] == 0):
-                    base_l_instaces[k,int(((L_k_n - 1)*distance)),2] += 1
+                    base_l_instances[k,int(((L_k_n - 1)*distance)),2] += 1
                 # Unknown non-match counter  
                 elif (C_init[N_b*a + b, 0] == 0) and (C_init[N_b*a + b, 1] == 0):
-                    base_l_instaces[k,int(((L_k_n - 1)*distance)),3] += 1
+                    base_l_instances[k,int(((L_k_n - 1)*distance)),3] += 1
+    print(comparison_arrays)
+    print(base_l_instances)
 
 
 #Gibbs sampler 
@@ -89,7 +89,7 @@ def theta_and_c_sampler(T:int, C_init: np.ndarray, alpha: float):
                                                                 # two theta values vectors in each cell (Theta_M and Theta_U 
                                                                 # vectors of length L_f)
     temp_l_instances = np.full((K, L_k_n, 4), fill_value=0, dtype=int)
-    temp_l_instances[:,:,:] = base_l_instaces[:,:,:]
+    temp_l_instances[:,:,:] = base_l_instances[:,:,:]
 
     #fills dirichlet parameters for theta_M  or theta_U depending on if theta_M == True or False
     def alpha_fill(k: int, theta_type: bool, l_instances: np.ndarray) -> np.ndarray: 
@@ -130,7 +130,7 @@ def theta_and_c_sampler(T:int, C_init: np.ndarray, alpha: float):
         #Step 2: sampling C
         #C[t+1]: for all unknown (ie unfixed) pairs, set link value to 0 
         C[:,0]= np.where(C[:,1] == 0, 0, C[:,0]) 
-        temp_l_instances[:,:,:] = base_l_instaces[:,:,:]
+        temp_l_instances[:,:,:] = base_l_instances[:,:,:]
 
         row_order_list = ([a for a in range(N_a)])
         np.random.shuffle(row_order_list)
