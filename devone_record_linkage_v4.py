@@ -76,8 +76,7 @@ def theta_and_c_sampler(T:int) -> np.ndarray:
                                          # vectors of length L_f)
     C = np.full((N_a*N_b), 0)
     temp_l_instances = np.full((K, L_k_n, 2), fill_value=0, dtype=int)
-    temp_l_instances[:,:,0] = base_l_instaces[:,:,0]
-    temp_l_instances[:,:,1] = base_l_instaces[:,:,1]
+    temp_l_instances[:,:,:] = base_l_instaces[:,:,:]
 
     #fills dirichlet parameters for theta_M  or theta_U depending on if theta_M == True or False
     def alpha_fill(k: int, theta_type: bool, l_instances: np.ndarray) -> np.ndarray: 
@@ -117,8 +116,7 @@ def theta_and_c_sampler(T:int) -> np.ndarray:
 
         #Step 2: sampling C
         C = np.full((N_a*N_b), 0)
-        temp_l_instances[:,:,0] = base_l_instaces[:,:,0]
-        temp_l_instances[:,:,1] = base_l_instaces[:,:,1]
+        temp_l_instances[:,:,:] = base_l_instaces[:,:,:]
 
         row_order_list = ([a for a in range(N_a)])
         np.random.shuffle(row_order_list)
