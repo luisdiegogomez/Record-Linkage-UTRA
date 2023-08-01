@@ -179,7 +179,7 @@ C = theta_and_c_sampler(10)
 C_dataframe = pd.DataFrame(index=range(N_a), columns=range(N_b))
 for a in range(N_a):
     for b in range(N_b):
-        C_dataframe.iat[a, b] = theta_values[N_b*a +b]
+        C_dataframe.iat[a, b] = C[N_b*a +b]
 
 fill_comparison_arrays()
 
