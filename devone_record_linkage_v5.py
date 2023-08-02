@@ -13,8 +13,8 @@ start_time = time.time()
 ## Initilizating Datasets From CSV Files:
 
 # Make sure file paths are based on wherever your files are locally 
-A_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.csv")
-B_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.csv")
+A_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.csv",keep_default_na=False)
+B_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1_w_empty.csv",keep_default_na=False)
 
 ## Global Variables:
 
@@ -110,7 +110,7 @@ def theta_and_c_sampler(T:int, alpha: float):
         for k in range(K): 
             lvl = comparison_arrays[k, int(N_b* a + b)]
 
-            if lvl != None:
+            if pd.notna(lvl):
                 theta_mkl = theta_values[t, k, 0, int((L_k_n-1)*lvl)]
                 theta_ukl = theta_values[t, k, 1, int((L_k_n-1)*lvl)]
             else:
@@ -173,7 +173,7 @@ def theta_and_c_sampler(T:int, alpha: float):
             if(new_link_index != len(b_unlinked_unknown)):   
                 C[N_b*a + b_unlinked_unknown[new_link_index], 0] = 1
                 for k in range(K):
-                    if comparison_arrays[k,(N_b*a + b_unlinked_unknown[new_link_index])] != None:
+                    if pd.notna(comparison_arrays[k,(N_b*a + b_unlinked_unknown[new_link_index])]):
                         temp_l_instances[k,int((L_k_n - 1)*comparison_arrays[k,(N_b*a + b_unlinked_unknown[new_link_index])]),3] -= 1
                         temp_l_instances[k,int((L_k_n - 1)*comparison_arrays[k,(N_b*a + b_unlinked_unknown[new_link_index])]),2] += 1  
     
@@ -188,12 +188,12 @@ def C_matrix_to_df(C):
 
 fill_comparison_arrays()
 
-c_and_theta_vals = theta_and_c_sampler(100, 1)
+c_and_theta_vals = theta_and_c_sampler(1000, 1)
 
 c_df = C_matrix_to_df(c_and_theta_vals[0])
 #C_matrix_to_df(c_and_theta_vals[0]).to_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/test_csv.csv")
 
-comparison_df = pd.DataFrame(index=range(N_a), columns=range(N_b))
+comparison_df = pd.DataFrame(index=range(N_a), columns=range(N_a))
 for a in range(N_a):
         for b in range(N_b):
             if a == b:
@@ -204,9 +204,8 @@ for a in range(N_a):
 counter = 0
 
 for a in range(N_a):
-        for b in range(N_b):
-            if comparison_df.iat[a, b] == 1 and c_df.iat[a,b] == 1:
-                counter += 1
+    if comparison_df.iat[a, a] == 1 and c_df.iat[a,a] == 1:
+        counter += 1
 correct_percentage = counter/(N_a)
 
 print(c_df)
