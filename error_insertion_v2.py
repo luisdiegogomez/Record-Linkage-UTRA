@@ -9,7 +9,7 @@ class ErrorLvl(Enum):
     MID = .4 
     LOW = .2 
 
-A = pandas.read_csv("generated_csv2.csv")
+A = pandas.read_csv("2015 Shortened.csv")
 N_a = len(A.index)
 
 def insert_error(cols, err_func, err_lvls) -> list: 
@@ -81,6 +81,6 @@ def insert_errors(newDataPath : str, errorList : list[ErrorLvl]):
     
     A.to_csv(newDataPath)
 
-error = [ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH, ErrorLvl.HIGH ]
+error = [ErrorLvl.HIGH]*330
 
-insert_errors("generated_csv3.csv", error)
+insert_errors("2015 Shortened w Errors", error)

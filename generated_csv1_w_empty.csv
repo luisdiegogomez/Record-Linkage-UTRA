@@ -1,0 +1,21 @@
+Name,State,ZIP Code,Test Result,Date of Birth,Social Security Number,Income
+John Doe,California,90001,Positive,,123-45-6789,50000
+Jane Smith,Texas,75001,Negative,1990-08-22,987-65-4321,45000
+Michael Johnson,New York,10001,Positive,1978-11-10,567-89-0123,60000
+Emily Brown,Florida,33001,,1989-05-03,345-67-8901,55000
+William Lee,Washington,98101,Positive,1983-09-18,789-01-2345,52000
+Robert Garcia,California,90002,Negative,1995-12-07,234-56-7890,48000
+Jennifer Martinez,Texas,75002,Positive,1987-02-28,890-12-3456,51000
+Linda Hernandez,New York,10002,Negative,1992-06-11,456-78-9012,47000
+David Gonzalez,Florida,33002,Positive,1980-10-26,,
+Sarah Davis,Washington,,Negative,1998-01-09,567-89-0123,44000
+James Rodriguez,California,90003,Positive,1986-04-17,123-45-6789,52000
+,Texas,75003,Negative,1991-07-30,987-65-4321,50000
+Christopher Lopez,New York,10003,Positive,1979-12-14,567-89-0123,55000
+Michelle Scott,Florida,33003,Negative,1993-03-27,345-67-8901,53000
+,Washington,98103,Positive,1981-08-04,789-01-2345,60000
+,California,90004,Negative,1996-01-20,234-56-7890,57000
+Thomas Martinez,Texas,75004,Positive,1988-05-12,890-12-3456,48000
+Nancy Kim,New York,10004,,1994-09-25,456-78-9012,52000
+Daniel Adams,Florida,33004,Positive,1982-12-02,901-23-4567,51000
+Lisa Turner,Washington,,Negative,1999-02-08,567-89-0123,48000
