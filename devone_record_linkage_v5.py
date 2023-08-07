@@ -13,8 +13,14 @@ start_time = time.time()
 ## Initilizating Datasets From CSV Files:
 
 # Make sure file paths are based on wherever your files are locally 
-A_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.csv")
-B_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.csv")
+# A_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.csv")
+# B_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.csv")
+
+# Make sure file paths are based on wherever your files are locally 
+# DONT DELETE JUST COMMENT OUT 
+A_temp = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\2015 Shortened.csv")
+B_temp = pd.read_csv(r"C:\Users\efiaa\OneDrive\Documents\Record-Linkage-UTRA\2015 Shortened.csv")
+
 
 ## Global Variables:
 

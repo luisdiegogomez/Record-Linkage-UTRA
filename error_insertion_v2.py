@@ -9,7 +9,9 @@ class ErrorLvl(Enum):
     MID = .4 
     LOW = .2 
 
-A = pandas.read_csv("2015 Shortened.csv")
+#A = pandas.read_csv("2015 Shortened.csv", keep_default_na= False)
+A = pandas.read_csv("2015 Shortened.csv", keep_default_na= False)
+
 N_a = len(A.index)
 
 def insert_error(cols, err_func, err_lvls) -> list: 
@@ -23,21 +25,24 @@ def insert_error(cols, err_func, err_lvls) -> list:
 
 #delete errors in string: random character is deleted from given string in data frame
 def char_deletion(r, col):
-    mystr = A.iloc[r, col] 
-    del_char = random.randint(0, len(mystr)-1)
-    newstr = mystr[:del_char] + mystr[del_char +1:]
-    A.iloc[r, col] = newstr    
+    mystr = A.iloc[r, col]
+    if mystr != None and len(mystr) != 0: 
+        del_char = random.randint(0, len(mystr)-1)
+        newstr = mystr[:del_char] + mystr[del_char +1:]
+        A.iloc[r, col] = newstr    
+    
         
 #transposition errors in string: randomly chosen characters are swapped in given string in data frame 
 def char_transposition(r, col): 
     mystr = A.iloc[r, col] 
-    del_indices = random.sample(range(0, len(mystr)-1), 2)
-    char_list = [char for char in mystr]
-    temp = char_list[del_indices[0]]
-    char_list[del_indices[0]] = char_list[del_indices[1]]
-    char_list[del_indices[1]] = temp
-    newstr = ''.join(char_list)
-    A.iloc[r, col] = newstr
+    if mystr != None and len(mystr) >= 2: 
+        del_indices = random.sample(range(0, len(mystr)), 2)
+        char_list = [char for char in mystr]
+        temp = char_list[del_indices[0]]
+        char_list[del_indices[0]] = char_list[del_indices[1]]
+        char_list[del_indices[1]] = temp
+        newstr = ''.join(char_list)
+        A.iloc[r, col] = newstr
 
 # insert errors for categorical data: randomly selects a new category 
 def categorical_swap(r, col): 
@@ -48,12 +53,12 @@ def bool_error(r, col):
     A.iloc[r, col] = np.random.choice([True, False], 1)
 
 #TODO: fix gaussian error insertion 
-def int_gaussian_error(r, col): 
-    myint = A.iloc[r, col]
+# def int_gaussian_error(r, col): 
+#     myint = A.iloc[r, col]
 
-def float_gaussian_error(r, col): 
-    myfloat = A.iloc[r, col]
-    noise = np.random.normal(0,0,1)
+# def float_gaussian_error(r, col): 
+#     myfloat = A.iloc[r, col]
+#     noise = np.random.normal(0,0,1)
 
 #TODO: datetime error insertion 
 def datetime_error(r, col): 
@@ -81,6 +86,6 @@ def insert_errors(newDataPath : str, errorList : list[ErrorLvl]):
     
     A.to_csv(newDataPath)
 
-error = [ErrorLvl.HIGH]*330
+error = [ErrorLvl.HIGH]*len(A.columns)
 
 insert_errors("2015 Shortened w Errors", error)
