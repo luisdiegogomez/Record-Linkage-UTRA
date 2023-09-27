@@ -14,7 +14,7 @@ start_time = time.time()
 
 # Make sure file paths are based on wherever your files are locally 
 A_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1.csv",keep_default_na=False)
-B_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv1_w_empty.csv",keep_default_na=False)
+B_temp = pd.read_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/generated_csv2.csv",keep_default_na=False)
 
 ## Global Variables:
 
@@ -42,7 +42,7 @@ comparison_arrays = np.full((K, (N_a*N_b)), fill_value = 0, dtype= float)
 # Order of stored l instances: known matches (0), known non-matches (1), unknown matches (2), unknown non-matches (3)
 base_l_instances = np.full((K, L_k_n, 4), fill_value=0, dtype=int)
 
-C_init = np.full(((N_a * N_b), 2), 0)
+C_prior = np.full(((N_a * N_b), 2), fill_value=0, dtype=int)
 
 ## Functions:
 # Returns jaro_winkler_distance of two strings
@@ -64,24 +64,24 @@ def fill_comparison_arrays():
                     distance = jaro_winkler_distance(str(X_a.iat[a,k]), str(X_b.iat[b,k]))
                     comparison_arrays[k, ((N_b*a) + b)] = distance
                     # Known match counter
-                    if (C_init[N_b*a + b, 0] == 1) and (C_init[N_b*a + b, 1] == 1):
+                    if (C_prior[N_b*a + b, 0] == 1) and (C_prior[N_b*a + b, 1] == 1):
                         base_l_instances[k,int(((L_k_n - 1)*distance)),0] += 1
                     # Known non-match counter
-                    elif (C_init[N_b*a + b, 0] == 0) and (C_init[N_b*a + b, 1] == 1):
+                    elif (C_prior[N_b*a + b, 0] == 0) and (C_prior[N_b*a + b, 1] == 1):
                         base_l_instances[k,int(((L_k_n - 1)*distance)),1] += 1
                     # Unknown match counter  
-                    elif (C_init[N_b*a + b, 0] == 1) and (C_init[N_b*a + b, 1] == 0):
+                    elif (C_prior[N_b*a + b, 0] == 1) and (C_prior[N_b*a + b, 1] == 0):
                         base_l_instances[k,int(((L_k_n - 1)*distance)),2] += 1
                     # Unknown non-match counter  
-                    elif (C_init[N_b*a + b, 0] == 0) and (C_init[N_b*a + b, 1] == 0):
+                    elif (C_prior[N_b*a + b, 0] == 0) and (C_prior[N_b*a + b, 1] == 0):
                         base_l_instances[k,int(((L_k_n - 1)*distance)),3] += 1
                 else:
                     comparison_arrays[k, ((N_b*a) + b)] = None
                 
 # Gibbs Sampler 
 def theta_and_c_sampler(T:int, alpha: float):
-    C = np.full(((N_a * N_b), 2), 0)
-    C[:,:] = C_init[:,:]
+    C = np.full(((N_a * N_b), 2), fill_value=0, dtype=int)
+    C[:,:] = C_prior[:,:]
     #Establishing initial parameters for the Dirchlet Distributions from which we're sampling:
     M_alpha_priors = np.full(L_k_n, 1, dtype=int)
     U_alpha_priors = np.full(L_k_n, 1, dtype=int)
@@ -94,7 +94,7 @@ def theta_and_c_sampler(T:int, alpha: float):
     temp_l_instances[:,:,:] = base_l_instances[:,:,:]
 
     #fills dirichlet parameters for theta_M  or theta_U depending on if theta_M == True or False
-    def alpha_fill(k: int, theta_type: bool,) -> np.ndarray: 
+    def alpha_fill(k: int, theta_type: bool) -> np.ndarray: 
         a_lst = []
         for l in range(L_k_n): 
             if theta_type:
@@ -148,7 +148,7 @@ def theta_and_c_sampler(T:int, alpha: float):
             
             # (N_b*a + b) mod N_b returns b index of pair
             b_unlinked_unknown = list(set(unlinked_unknown_pairs % N_b))
-            b_unlinked_known =list(set(unlinked_known_pairs % N_b))
+            b_unlinked_known = list(set(unlinked_known_pairs % N_b))
 
             num_links = N_b - len(b_unlinked_unknown) - len(b_unlinked_known)
             
@@ -188,7 +188,7 @@ def C_matrix_to_df(C):
 
 fill_comparison_arrays()
 
-c_and_theta_vals = theta_and_c_sampler(1000, 1)
+c_and_theta_vals = theta_and_c_sampler(100, 1)
 
 c_df = C_matrix_to_df(c_and_theta_vals[0])
 #C_matrix_to_df(c_and_theta_vals[0]).to_csv("~/OneDrive/Documents/R/Record-Linkage-UTRA/test_csv.csv")
@@ -202,16 +202,14 @@ for a in range(N_a):
                 comparison_df.iat[a, b] = 0
 
 counter = 0
-
 for a in range(N_a):
     if comparison_df.iat[a, a] == 1 and c_df.iat[a,a] == 1:
         counter += 1
 correct_percentage = counter/(N_a)
 
 print(c_df)
+#c_df.to_csv('2015 Shortened C-Structure.csv')
 print("Accuracy:")
 print(correct_percentage)
-
-#c_df.to_csv('2015 Shortened C-Structure.csv')
 
 print("--- %s seconds ---" % (time.time() - start_time))
