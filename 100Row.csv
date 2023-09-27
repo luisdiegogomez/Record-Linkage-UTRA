@@ -1,0 +1,201 @@
+rec_id,surname,given_name,gender,age,social_security_number,phone_number,state,income
+rec-00-org,kempton,paris,female,70_79,945-38-3465,(764) 831-2934,montana,45122.905
+rec-01-dup-0,rushby,arahella,female,30_39,307-62-1369,(590) 052-3171,,65238.228
+rec-01-dup-1,lrushby,arabella,female,30_39,307-62-1369,,,65238.228
+rec-01-org,rushby,arabella,female,30_39,307-62-1369,(590) 952-3171,minnesota,65238.228
+rec-02-dup-0,egari,oliver,male,60_69,379-14-2605,,,63057.750
+rec-02-dup-1,eagm,oliver,male,60_69,379-14-2605,,,63057.750
+rec-02-org,egan,oliver,male,60_69,379-14-2605,(862) 886-4264,california,63057.750
+rec-03-org,hammer,harry,female,30_39,320-67-9633,(283) 948-9835,new york,67217.163
+rec-04-org,cormick,liam,male,under_10,533-12-4652,(366) 764-0160,california,64906.143
+rec-05-org,clarke,rachel,male,10_19,883-45-8175,(480) 535-9284,utah,60900.395
+rec-06-org,faull,max,female,30_39,554-03-5534,(215) 204-2958,georgia,55252.022
+rec-07-org,hinks,sarah,male,10_19,479-15-9330,(269) 569-3304,montana,46526.988
+rec-08-org,hoistech,tiana,male,30_39,152-87-4193,(599) 982-2700,colorado,65377.725
+rec-09-dup-0,leclce,nich0las,male,10_19,412-04-8344,(271) 555-9557,,44788.901
+rec-09-org,lecke,nicholas,male,10_19,412-04-8344,(271) 555-9557,arkansas,44788.901
+rec-10-org,ardalich,jack,female,70_79,422-21-2039,(550) 935-8177,new york,58048.354
+rec-11-dup-0,geor9e,jack,female,50_59,597-03-5008,,,78714.426
+rec-11-org,george,jack,female,50_59,597-03-5008,(652) 641-0446,massachusetts,78714.426
+rec-12-org,madigan,kyle,female,40_49,032-71-7903,(519) 425-3868,wisconsin,56178.334
+rec-13-org,elderton,tiahnee,male,20_29,275-88-9278,(400) 607-1830,michigan,55996.449
+rec-14-org,purser,juliana,female,60_69,264-80-8584,(875) 065-5070,missouri,47225.766
+rec-15-dup-0,masotn,kloe,male,30_39,655-52-5657,(124) 957-4168,,51836.044
+rec-15-dup-1,maons,chl0e,male,30_39,655-52-5657,(124) 957-4168,,51836.044
+rec-15-dup-2,mas0n,chloe,male,30_39,655-52-5657,,indisna,51836.044
+rec-15-dup-3,msan,cl>loe,male,30_39,655-52-5657,,indiana,51836.044
+rec-15-org,mason,chloe,male,30_39,655-52-5657,(124) 957-4168,indiana,51836.044
+rec-16-org,foottit,seth,male,40_49,012-60-3903,(374) 130-9767,washington d.c.,65358.947
+rec-17-org,bradshaw,imogen,male,10_19,080-68-3122,(583) 123-3941,south carolina,46533.245
+rec-18-dup-0,gigney,gabrielile,female,90_99,748-92-2272,,,47509.198
+rec-18-dup-1,gginey,gabrielle,female,90_99,748-92-2272,(871) 208-3068,,47509.198
+rec-18-dup-2,gigney,gabrieile,female,90_99,748-92-2272,(871) 107-3068,north farolina,47509.198
+rec-18-dup-3,gigneu,gabrielle,female,90_99,748-92-2272,,,47509.198
+rec-18-dup-4,gigney,gabrjelle,female,90_99,748-92-2272,(871) 208-3068,north farolina,47509.198
+rec-18-org,gigney,gabrielle,female,90_99,748-92-2272,(871) 108-3068,north carolina,47509.198
+rec-19-org,leesue,sarah,female,50_59,639-94-9334,(409) 729-6755,illinois,62415.865
+rec-20-dup-0,hope,madeiine,male,under_10,741-35-9851,(272) 897-0175,utqh,59579.705
+rec-20-org,hope,madeline,male,under_10,741-35-9851,(272) 997-0175,utah,59579.705
+rec-21-org,hauripz,joshua,female,10_19,042-05-0024,(985) 335-5832,new york,64030.502
+rec-22-org,chell,cooper,female,40_49,532-41-4294,(191) 825-1824,tennessee,45257.013
+rec-23-org,carington-smith,mitchell,female,under_10,478-74-2946,(391) 825-8906,pennsylvania,58469.757
+rec-24-org,burford,madison,male,70_79,963-39-9316,(734) 045-8323,colorado,60635.564
+rec-25-org,lavender,esme,male,80_89,813-37-1914,(680) 934-8582,louisiana,47543.345
+rec-26-org,elphick,thomas,female,60_69,310-21-0125,(660) 163-3610,california,61118.171
+rec-27-org,scott-jackson,victoria,male,50_59,447-75-5164,(439) 671-6610,texas,51894.253
+rec-28-dup-0,olveczjka,bensamin,male,20_29,593-11-2386,(749) 433-8949,rhode 9wland,69743.193
+rec-28-dup-1,lovec2ka,beniamin,male,20_29,593-11-2386,(749) 433-8949,,69743.193
+rec-28-org,olveczka,benjamin,male,20_29,593-11-2386,(749) 433-8949,rhode island,69743.193
+rec-29-dup-0,rosbno,ckira,male,10_19,250-36-9897,(237) 283-5614,,46318.576
+rec-29-dup-1,rob5on,ckira,male,10_19,250-36-9897,(237) 283-5614,,46318.576
+rec-29-dup-2,r0bsno,ckira,male,10_19,250-36-9897,(237) 283-5614,tennwssee,46318.576
+rec-29-dup-3,orbson,ckira,male,10_19,250-36-9897,(237) 283-5614,,46318.576
+rec-29-org,robson,kira,male,10_19,250-36-9897,(237) 283-5614,tennessee,46318.576
+rec-30-org,blomberg,hannah,male,20_29,355-38-1711,(227) 924-7292,north carolina,56060.479
+rec-31-org,kibby,michael,female,10_19,144-65-6621,(444) 613-1290,kentucky,42658.432
+rec-32-org,wiseman,thomas,female,under_10,379-23-6564,(639) 344-0440,south carolina,52349.891
+rec-33-org,teague,quinn,female,10_19,535-14-2741,(977) 287-3052,new jersey,75076.180
+rec-34-org,matthews,jessica,male,30_39,324-64-5019,(621) 788-6653,pennsylvania,55889.949
+rec-35-dup-0,van tholen,stamantha,female,10_19,761-41-9920,(650) 447-6184,,47653.518
+rec-35-dup-1,yan tholen,stamantha,female,10_19,761-41-9920,(650) 448-6184,mohtana,47653.518
+rec-35-dup-2,vant h0len,samantha,female,10_19,761-41-9920,(650) 448-5184,mongaha,47653.518
+rec-35-org,van tholen,samantha,female,10_19,761-41-9920,(650) 448-6184,montana,47653.518
+rec-36-dup-0,rejd,klaudia,male,10_19,807-16-6679,(504) 864-1790,calif0rnia,66597.130
+rec-36-org,reid,claudia,male,10_19,807-16-6679,(504) 864-1790,california,66597.130
+rec-37-dup-0,plipscormbe,ava,male,50_59,780-07-6394,,,48425.591
+rec-37-dup-1,cipscombe,ava,male,50_59,780-07-6394,(507) 700-2897,,48425.591
+rec-37-org,lipscombe,ava,male,50_59,780-07-6394,(507) 700-1897,alabama,48425.591
+rec-38-dup-0,renfery,broclee,male,50_59,570-55-1474,,california,63540.680
+rec-38-dup-1,remfrey,prodee,male,50_59,570-55-1474,(848) 840-0753,californla,63540.680
+rec-38-org,renfrey,brodee,male,50_59,570-55-1474,(848) 840-0753,california,63540.680
+rec-39-org,scheerlinck,christopher,female,10_19,112-47-9737,(151) 894-8305,massachusetts,70813.701
+rec-40-dup-0,oresk0vic,william,male,40_49,088-48-3257,(395) 223-8207,illihois,68180.762
+rec-40-dup-1,ore5kouic,wiliaiii,male,40_49,088-48-3257,(395) 213-8207,illijois,68180.762
+rec-40-dup-2,oreskovic,willjam,male,40_49,088-48-3257,(395) 213-8307,ilkihois,68180.762
+rec-40-dup-3,oreskovic,will'lam,male,40_49,088-48-3257,,illino8s,68180.762
+rec-40-dup-4,oreskovlc,willian,male,40_49,088-48-3257,(395) 213-8207,illin8is,68180.762
+rec-40-org,oreskovic,william,male,40_49,088-48-3257,(395) 213-8207,illinois,68180.762
+rec-41-org,webb,deakyn,female,70_79,774-39-0279,(234) 546-3107,florida,52972.031
+rec-42-dup-0,gzazo1a,giul:ana,female,10_19,289-31-9901,(581) 797-8858,,59934.060
+rec-42-dup-1,agzzolua,giuliana,female,10_19,289-31-9901,,,59934.060
+rec-42-org,gazzola,giuliana,female,10_19,289-31-9901,(581) 797-8858,washington,59934.060
+rec-43-dup-0,erid,aleecsander,female,10_19,294-05-5104,(470) 421-12q9,california,64270.354
+rec-43-dup-1,rei,alexander,female,10_19,294-05-5104,,calivornia,64270.354
+rec-43-dup-2,reid,alexancler,female,10_19,294-05-5104,(470) 42q-1229,,64270.354
+rec-43-org,reid,alexander,female,10_19,294-05-5104,(470) 421-1229,california,64270.354
+rec-44-org,white,liam,female,30_39,162-95-9658,(326) 972-5591,california,63906.114
+rec-45-org,braunack,mikayla,male,50_59,112-90-9892,(904) 769-4688,georgia,50164.928
+rec-46-org,o'shannessy,flynn,female,30_39,506-08-8233,(468) 384-6533,california,63037.416
+rec-47-org,d'addio,makenzi,female,10_19,485-71-5142,(949) 946-8481,maryland,69435.677
+rec-48-org,gully,millane,female,10_19,796-90-3170,(692) 136-9054,alaska,71082.430
+rec-49-org,elkhair,harriet,male,under_10,435-45-9043,(468) 920-8610,missouri,55534.619
+rec-50-org,crouch,finn,female,40_49,943-15-3647,(512) 421-0828,pennsylvania,53969.834
+rec-51-dup-0,stebpenson,joel,female,50_59,956-16-7343,,t4xax,51661.369
+rec-51-dup-1,tsepherison,joel,female,50_59,956-16-7343,,,51661.369
+rec-51-dup-2,stephensom,joel,female,50_59,956-16-7343,(868) 673-6289,texsw,51661.369
+rec-51-org,stephenson,joel,female,50_59,956-16-7343,(868) 673-6189,texas,51661.369
+rec-52-org,matias,deakin,female,10_19,679-73-6160,(326) 129-3165,california,64732.277
+rec-53-org,paterson,riley,male,60_69,405-69-2905,(101) 119-9903,minnesota,59842.971
+rec-54-dup-0,holiiiyard,madison,female,40_49,768-16-1955,(421) 674-0682,,50766.195
+rec-54-org,holmyard,madison,female,40_49,768-16-1955,(421) 675-0682,north carolina,50766.195
+rec-55-org,cannell,leo,male,30_39,056-07-0716,(633) 432-8449,new york,60711.233
+rec-56-org,coady,alec,female,80_89,077-70-7956,(521) 380-9579,pennsylvania,53204.594
+rec-57-org,clarke,jory,male,60_69,314-37-7346,(252) 750-9691,indiana,48196.676
+rec-58-dup-0,reicl,kody,female,50_59,551-04-5227,(777) 686-4925,,54698.757
+rec-58-org,reid,kody,female,50_59,551-04-5227,(777) 686-4935,ohio,54698.757
+rec-59-org,reid,alexander,female,90_99,332-48-8138,(846) 787-4933,georgia,53635.381
+rec-60-org,boulter,tyrone,female,under_10,718-75-3785,(135) 492-4195,ohio,58680.310
+rec-61-dup-0,greeri,alice,male,10_19,946-87-7365,(900) 721-3768,georg8a,57117.440
+rec-61-org,green,alice,male,10_19,946-87-7365,(900) 711-3768,georgia,57117.440
+rec-62-org,webb,taylor,female,60_69,799-49-7115,(141) 886-8023,virginia,65988.309
+rec-63-dup-0,bloomfielcl,le0,male,60_69,259-12-6428,(464) 937-1957,,58286.630
+rec-63-dup-1,bloomifelcl,leo,male,60_69,259-12-6428,(464) 037-1957,,58286.630
+rec-63-dup-2,bloomfueld,le0,male,60_69,259-12-6428,(464) 937-1957,,58286.630
+rec-63-dup-3,bloomf'lejd,leo,male,60_69,259-12-6428,,,58286.630
+rec-63-org,bloomfield,leo,male,60_69,259-12-6428,(464) 937-1957,pennsylvania,58286.630
+rec-64-org,dallas,cooper,male,under_10,985-18-1347,(457) 658-9106,california,67154.487
+rec-65-org,webb,alice,female,under_10,174-60-8487,(217) 925-7929,wyoming,65770.083
+rec-66-dup-0,beattje,isabelle,female,50_59,040-59-7677,,,55555.710
+rec-66-org,beattie,isabelle,female,50_59,040-59-7677,(100) 490-3945,texas,55555.710
+rec-67-org,kelley,alannah,male,40_49,857-51-3020,(713) 168-1873,california,65547.790
+rec-68-org,mech,brock,male,50_59,717-62-7993,(442) 336-3205,massachusetts,71961.081
+rec-69-org,portlock,teagan,female,20_29,074-65-9485,(152) 669-9742,pennsylvania,60555.132
+rec-70-dup-0,sushaiiies,madeljne,male,70_79,770-33-5896,(435) 389-4078,,53621.774
+rec-70-dup-1,sushaiiies,matel:ne,male,70_79,770-33-5896,(435) 389-4078,,53621.774
+rec-70-dup-2,susharnes,madeline,male,70_79,770-33-5896,,pennsylvajia,53621.774
+rec-70-dup-3,usshames,mateline,male,70_79,770-33-5896,(435) 389-4078,,53621.774
+rec-70-org,sushames,madeline,male,70_79,770-33-5896,(435) 389-4078,pennsylvania,53621.774
+rec-71-dup-0,wewberrv,andrevv,male,70_79,862-12-3340,(285) 708-3628,,51238.063
+rec-71-dup-1,newberyr,anclrew,male,70_79,862-12-3340,(285) 708-3628,,51238.063
+rec-71-dup-2,enwberry,andrevv,male,70_79,862-12-3340,(285) 708-3628,,51238.063
+rec-71-dup-3,newberry,anclrew,male,70_79,862-12-3340,,pennsylfan8a,51238.063
+rec-71-org,newberry,andrew,male,70_79,862-12-3340,(285) 708-3628,pennsylvania,51238.063
+rec-72-org,hewetson,paige,female,40_49,016-46-6490,(163) 655-5373,california,64033.262
+rec-73-org,hassold,karli,male,10_19,080-08-1824,(552) 869-2531,florida,53442.115
+rec-74-org,white,lucas,male,40_49,872-42-3139,(922) 228-7826,california,69083.589
+rec-75-dup-0,budge,shackira,female,20_29,395-41-9736,,mpntaha,51654.883
+rec-75-dup-1,bud9e,shakira,female,20_29,395-41-9736,(833) 264-6308,mom6ana,51654.883
+rec-75-org,budge,shakira,female,20_29,395-41-9736,(833) 264-5308,montana,51654.883
+rec-76-org,clarke,rachel,female,40_49,411-89-7617,(629) 853-7672,california,62792.526
+rec-77-dup-0,rejcl,liam,female,30_39,795-38-6003,(700) 052-1983,,54580.578
+rec-77-dup-1,ried,liam,female,30_39,795-38-6003,(700) 052-1983,,54580.578
+rec-77-dup-2,reicl,lyam,female,30_39,795-38-6003,(700) 052-1083,,54580.578
+rec-77-org,reid,liam,female,30_39,795-38-6003,(700) 052-1083,oregon,54580.578
+rec-78-dup-0,ree5,rily,male,20_29,526-35-0889,(255) 894-0257,,70286.237
+rec-78-dup-1,rees,rijev,male,20_29,526-35-0889,(255) 895-9257,washingt9n d.c.,70286.237
+rec-78-dup-2,reej,rjlei,male,20_29,526-35-0889,(255) 894-0257,,70286.237
+rec-78-dup-3,rle5,rilei,male,20_29,526-35-0889,(255) 894-0257,washingtln d.f.,70286.237
+rec-78-dup-4,ree5,rily,male,20_29,526-35-0889,(255) 894-0257,washingt9n d.c.,70286.237
+rec-78-org,rees,riley,male,20_29,526-35-0889,(255) 894-0257,washington d.c.,70286.237
+rec-79-org,meadows,gianni,male,50_59,965-58-4390,(633) 214-9215,california,62580.774
+rec-80-dup-0,msano,ilson,male,20_29,181-92-2758,(120) 292-2127,iowz,59294.052
+rec-80-org,mason,wilson,male,20_29,181-92-2758,(120) 292-2127,iowa,59294.052
+rec-81-org,clarke,michael,male,40_49,684-25-5132,(176) 581-1684,texas,54877.842
+rec-82-org,coleman,skye,female,50_59,123-76-3213,(444) 691-8898,texas,57523.768
+rec-83-dup-0,hite,talyah,male,under_10,842-18-6524,(340) 430-1815,,59217.740
+rec-83-org,white,talyah,male,under_10,842-18-6524,(340) 430-1715,vermont,59217.740
+rec-84-dup-0,dix0n,jame5,male,70_79,510-80-7113,(316) 670-7035,,66895.770
+rec-84-org,dixon,james,male,70_79,510-80-7113,(316) 670-7035,delaware,66895.770
+rec-85-dup-0,baedell,harrisom,female,20_29,933-25-5981,(521) 957-5630,nrw york,65912.999
+rec-85-org,beadell,harrison,female,20_29,933-25-5981,(521) 957-5630,new york,65912.999
+rec-86-dup-0,loek,p0ebe,female,under_10,036-47-7545,,montana,49855.599
+rec-86-dup-1,l0ke,pboebe,female,under_10,036-47-7545,(457) 370-2989,mohgana,49855.599
+rec-86-dup-2,lokte,foebe,female,under_10,036-47-7545,(457) 370-2989,,49855.599
+rec-86-dup-3,lkoe,phoebe,female,under_10,036-47-7545,,,49855.599
+rec-86-dup-4,lmoe,phoeb,female,under_10,036-47-7545,(457) 370-2989,,49855.599
+rec-86-org,loke,phoebe,female,under_10,036-47-7545,(457) 370-2989,montana,49855.599
+rec-87-org,whiteley,matthew,female,50_59,737-95-6454,(471) 701-6541,alaska,76010.608
+rec-88-dup-0,kerkhma,jtello,male,60_69,070-61-9967,(488) 210-8352,mohtana,53586.871
+rec-88-dup-1,kerkahm,sttelio,male,60_69,070-61-9967,(488) 210-8352,,53586.871
+rec-88-dup-2,kerhm,stelio,male,60_69,070-61-9967,(488) 219-8352,,53586.871
+rec-88-dup-3,kerkbam,stelio,male,60_69,070-61-9967,,mongana,53586.871
+rec-88-org,kerkham,stelio,male,60_69,070-61-9967,(488) 210-8352,montana,53586.871
+rec-89-org,grubb,ruby,female,50_59,794-71-2574,(368) 981-0599,west virginia,43477.460
+rec-90-org,frahn,oliver,male,60_69,900-37-9182,(213) 878-2862,north carolina,51807.311
+rec-91-org,robson,leah,male,20_29,791-05-7664,(702) 066-1121,new mexico,46787.337
+rec-92-dup-0,shepzerd,kyara,male,50_59,709-97-5121,(830) 618-7963,,55362.311
+rec-92-dup-1,shepbercl,kjara,male,50_59,709-97-5121,(830) 618-7963,,55362.311
+rec-92-org,shepherd,kiara,male,50_59,709-97-5121,(830) 618-7963,ohio,55362.311
+rec-93-dup-0,crovch,alexandeah,male,50_59,952-68-7388,(161) 270-7945,foor9da,54812.008
+rec-93-dup-1,crovch,aiexancler,male,50_59,952-68-7388,(161) 270-7945,,54812.008
+rec-93-dup-2,crovch,alexander,male,50_59,952-68-7388,,,54812.008
+rec-93-dup-3,croucch,aleecsander,male,50_59,952-68-7388,(161) 270-7945,,54812.008
+rec-93-org,crouch,alexander,male,50_59,952-68-7388,(161) 270-7945,florida,54812.008
+rec-94-dup-0,euerett,kadelin,male,60_69,199-79-3070,(665) 981-5424,montzha,48206.611
+rec-94-dup-1,emerett,kadelin,male,60_69,199-79-3070,(665) 981-5424,,48206.611
+rec-94-dup-2,everrett,katelin,male,60_69,199-79-3070,(665) 982-5424,,48206.611
+rec-94-dup-3,evreett,katelin,male,60_69,199-79-3070,(665) 971-5424,,48206.611
+rec-94-dup-4,evreett,katelin,male,60_69,199-79-3070,(665) 881-5424,,48206.611
+rec-94-org,everett,katelin,male,60_69,199-79-3070,(665) 981-5424,montana,48206.611
+rec-95-dup-0,coppock,hol|y,female,50_59,670-98-8145,(972) 032-7881,south dal0ta,51317.829
+rec-95-org,coppock,holly,female,50_59,670-98-8145,(971) 032-7881,south dakota,51317.829
+rec-96-dup-0,pa:rie,aiden,male,20_29,612-92-7220,(214) 167-0168,,62229.940
+rec-96-org,paine,aiden,male,20_29,612-92-7220,(214) 157-0168,minnesota,62229.940
+rec-97-dup-0,noble,bailei,female,70_79,016-22-7432,,,50690.056
+rec-97-dup-1,nob1e,bailey,female,70_79,016-22-7432,(931) 094-4094,,50690.056
+rec-97-dup-2,nobie,bailev,female,70_79,016-22-7432,(931) 994-4094,oreg0j,50690.056
+rec-97-dup-3,nojbe,bailey,female,70_79,016-22-7432,,,50690.056
+rec-97-dup-4,nohle,bailev,female,70_79,016-22-7432,(931) 994-4094,pregln,50690.056
+rec-97-org,noble,bailey,female,70_79,016-22-7432,(931) 994-4094,oregon,50690.056
+rec-98-org,white,thomas,female,30_39,918-72-3478,(681) 295-3091,montana,44520.992
+rec-99-org,bruhn,tynan,male,50_59,820-19-8407,(830) 045-0206,south dakota,50217.979
